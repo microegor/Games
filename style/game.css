@@ -1,19 +1,30 @@
-.table {
-    background-color: blue;
-    height: 100%;
-    width: 30%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+#table {
+    position: relative;
+    width: 100vw;   
+    height: 100vh;  
+    overflow: hidden;
+    background: skyblue;
 }
 
 .bird {
-    width: 80px;
-    height: 80px;
+    width: 50px;
+    height: 50px;
     position: absolute;
     background-image: url("../pictures/bird.svg");
+    left: 100px;
     background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
     transition: top 0.3s ease;
+    z-index: 999;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+.pipe {
+    position: absolute;
+    background-color: green;
+    transition: top 0.2s ease;
 }
