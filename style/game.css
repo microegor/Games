@@ -30,3 +30,11 @@ body {
     background-position: center;
     background-size: contain;
 }
+
+.pipe-cap {
+    position: absolute;
+    left: 0;
+    background-image: url("../pictures/pipe-cap.png");
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+}
