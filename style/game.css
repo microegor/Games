@@ -1,7 +1,7 @@
 #table {
     position: relative;
-    width: 100vw;   
-    height: 100vh;  
+    width: 100vw;
+    height: 100vh;
     overflow: hidden;
     background: skyblue;
 }
@@ -25,6 +25,8 @@ body {
 
 .pipe {
     position: absolute;
-    background-color: green;
+    background-image: url("../pictures/pipe.png");
     transition: top 0.2s ease;
+    background-position: center;
+    background-size: contain;
 }

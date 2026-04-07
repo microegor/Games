@@ -107,7 +107,7 @@ function pipeMove() {
 
 
 setInterval(getDown, 50)
-setInterval(createPipe, 1000);
+setInterval(createPipe, 1500);
 setInterval(pipeMove, 1);
 
 render();
