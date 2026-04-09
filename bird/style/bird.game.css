@@ -50,3 +50,19 @@ body {
     background-size: 100% 100%;
     background-repeat: no-repeat;
 }
+
+.end {
+    position: absolute;
+    top: -100;
+    transition: top 0.5s ease;
+    background-color: rgb(7, 165, 7);
+    border:2px solid green;
+    font-size: 20px;
+    z-index: 1000;
+    cursor: pointer;
+    user-select: none;
+    top: 50%;
+    left: 47%;
+    padding: 10px;
+    margin: 0;
+}

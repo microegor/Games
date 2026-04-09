@@ -108,29 +108,49 @@ function render() {
 
 function getDown() {
     bird.el.style.transform = `rotate(${angle}deg)`;
+
     if (bird.top < maxTop) {
         bird.top += 20;
+        
         if (angle < 75) {
-            angle += 9
-            bird.el.style.transform = `rotate(${angle}deg)`;
+            angle += 9;
         }
-    } else {
+    } else if(isGameOver == true){
         bird.top = maxTop;
         isGameOver = false;
+        reload();
     }
 
-    for (let i = pipes.length - 1; i >= 0; i--) {
-        if (
-            isColliding(bird.el, pipes[i].bottomEl) ||
-            isColliding(bird.el, pipes[i].topEl) ||
-            isColliding(bird.el, pipes[i].topCapEl) ||
-            isColliding(bird.el, pipes[i].bottomCapEl)
-        ) {
-            isGameOver = false;
+    if (isGameOver) {
+        for (let i = pipes.length - 1; i >= 0; i--) {
+            if (
+                isColliding(bird.el, pipes[i].bottomEl) ||
+                isColliding(bird.el, pipes[i].topEl) ||
+                isColliding(bird.el, pipes[i].topCapEl) ||
+                isColliding(bird.el, pipes[i].bottomCapEl)
+            ) {
+                isGameOver = false;
+                reload();
+                break;
+            }
         }
     }
 
     render();
+}
+
+
+function reload() {
+    const endButton = document.createElement("div");
+    endButton.classList.add("end");
+    endButton.textContent = "Restart";
+    endButton.addEventListener("click", restart);
+
+    table.appendChild(endButton);
+}
+
+function restart() {
+    location.reload();
 }
 
 function pipeMove() {
