@@ -1,9 +1,21 @@
+@keyframes bgMove {
+    from {
+        background-position: 0 0;
+    }
+
+    to {
+        background-position: -512px 0;
+    }
+}
+
 #table {
     position: relative;
     width: 100vw;
     height: 100vh;
     overflow: hidden;
-    background: skyblue;
+    background: url("../pictures/body.png") repeat-x;
+    background-size: auto 100%;
+    animation: bgMove 10s linear infinite;
 }
 
 .bird {
@@ -13,7 +25,7 @@
     background-image: url("../pictures/bird.svg");
     left: 100px;
     background-size: contain;
-    transition: top 0.3s ease;
+    transition: top 0.3s ease, transform 0.15s linear;
     z-index: 999;
 }
 
