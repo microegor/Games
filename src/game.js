@@ -16,6 +16,7 @@ const pipeCapHeight = 30;
 const table = document.getElementById("table");
 
 const maxTop = table.offsetHeight - bird.el.offsetHeight;
+let angle = 0;
 
 const change = 0;
 
@@ -36,6 +37,11 @@ function isColliding(a, b) {
 function jump(e) {
     if (isGameOver && e.code == "Space") {
         bird.top -= 200;
+        bird.el.style.transform = `rotate(${angle}deg)`
+        angle -= 100
+        if (angle < -85) {
+            angle = -85
+        }
         render();
     }
 }
@@ -101,22 +107,25 @@ function render() {
 }
 
 function getDown() {
+    bird.el.style.transform = `rotate(${angle}deg)`;
     if (bird.top < maxTop) {
         bird.top += 20;
+        if (angle < 75) {
+            angle += 10
+            bird.el.style.transform = `rotate(${angle}deg)`;
+        }
     } else {
         bird.top = maxTop;
         isGameOver = false;
     }
 
-    for (let i = pipes.length - 1; i >= 0; i--)
-    {
+    for (let i = pipes.length - 1; i >= 0; i--) {
         if (
             isColliding(bird.el, pipes[i].bottomEl) ||
             isColliding(bird.el, pipes[i].topEl) ||
             isColliding(bird.el, pipes[i].topCapEl) ||
             isColliding(bird.el, pipes[i].bottomCapEl)
-        )
-        {
+        ) {
             isGameOver = false;
         }
     }
@@ -134,7 +143,6 @@ function pipeMove() {
 
         pipes[i].topEl.style.left = pipes[i].left + "px";
         pipes[i].bottomEl.style.left = pipes[i].left + "px";
-
         pipes[i].topCapEl.style.left = capLeft + "px";
         pipes[i].bottomCapEl.style.left = capLeft + "px";
     }
