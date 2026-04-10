@@ -4,6 +4,8 @@ const bird = {
     el: document.getElementById("bird"),
 };
 
+let score = 0;
+
 //Pipe stats
 const pipeWidth = 60;
 const pipeGap = 170;
@@ -17,6 +19,11 @@ const table = document.getElementById("table");
 
 const maxTop = table.offsetHeight - bird.el.offsetHeight;
 let angle = 0;
+
+const roof = document.createElement("div");
+roof.classList.add("roof");
+roof.style.width = table.offsetWidth + "px";
+table.appendChild(roof);
 
 const change = 0;
 
@@ -57,6 +64,7 @@ function createPipe() {
 
     const pipeLeft = table.offsetWidth;
     const capLeft = pipeLeft - (pipeCapWidth - pipeWidth) / 2;
+    const scoreLeft = pipeWidth / 2 + table.offsetWidth;
 
     const topPipe = document.createElement("div");
     topPipe.classList.add("pipe", "top-pipe");
@@ -86,10 +94,17 @@ function createPipe() {
     bottomCap.style.left = capLeft + "px";
     bottomCap.style.bottom = (bottomHeight - pipeCapHeight) + "px";
 
+    const scoreT = document.createElement("div");
+    scoreT.classList.add("scoreT");
+    scoreT.style.width = 10 + "px";
+    scoreT.style.height = table.offsetHeight + "px";
+    scoreT.style.left = scoreLeft + "px";
+
     table.appendChild(topPipe);
     table.appendChild(topCap);
     table.appendChild(bottomPipe);
     table.appendChild(bottomCap);
+    table.appendChild(scoreT);
 
     pipes.push({
         left: pipeLeft,
@@ -99,6 +114,9 @@ function createPipe() {
         topCapEl: topCap,
         bottomEl: bottomPipe,
         bottomCapEl: bottomCap,
+        scoreT: scoreT,
+        scoreLeft: scoreLeft,
+        flagS: true,
     });
 }
 
@@ -111,11 +129,11 @@ function getDown() {
 
     if (bird.top < maxTop) {
         bird.top += 20;
-        
+
         if (angle < 75) {
             angle += 9;
         }
-    } else if(isGameOver == true){
+    } else if (isGameOver == true) {
         bird.top = maxTop;
         isGameOver = false;
         reload();
@@ -123,6 +141,16 @@ function getDown() {
 
     if (isGameOver) {
         for (let i = pipes.length - 1; i >= 0; i--) {
+            if (isColliding(bird.el, pipes[i].scoreT) && pipes[i].flagS) {
+                pipes[i].flagS = false;
+                score++;
+                document.getElementById("score").textContent = "score: " + score;
+            }
+            if (isColliding(bird.el, roof)) {
+                isGameOver = false;
+                reload();
+                break;
+            }
             if (
                 isColliding(bird.el, pipes[i].bottomEl) ||
                 isColliding(bird.el, pipes[i].topEl) ||
@@ -155,9 +183,9 @@ function restart() {
 
 function pipeMove() {
     if (!isGameOver) return;
-
     for (let i = pipes.length - 1; i >= 0; i--) {
         pipes[i].left -= pipeSpeed;
+        pipes[i].scoreLeft -= pipeSpeed;
 
         const capLeft = pipes[i].left - (pipeCapWidth - pipeWidth) / 2;
 
@@ -165,6 +193,7 @@ function pipeMove() {
         pipes[i].bottomEl.style.left = pipes[i].left + "px";
         pipes[i].topCapEl.style.left = capLeft + "px";
         pipes[i].bottomCapEl.style.left = capLeft + "px";
+        pipes[i].scoreT.style.left = pipes[i].scoreLeft + "px";
     }
 }
 
