@@ -169,12 +169,32 @@ function getDown() {
 
 
 function reload() {
+    document.getElementById("score").style.zIndex = 0;
+
+    const block = document.createElement("div");
+    block.classList.add("block");
+
+    const end = document.createElement("div");
+    end.classList.add("end");
+
+    const endText = document.createElement("div");
+    endText.classList.add("endText");
+    endText.textContent = "Skil issue";
+    
     const endButton = document.createElement("div");
-    endButton.classList.add("end");
+    endButton.classList.add("endButton");
     endButton.textContent = "Restart";
     endButton.addEventListener("click", restart);
-
-    table.appendChild(endButton);
+    
+    const scoreEnd = document.createElement("div");
+    scoreEnd.classList.add("scoreEnd");
+    scoreEnd.textContent = "Score: " + score;
+    
+    table.appendChild(block);
+    block.appendChild(end);
+    end.appendChild(endText);
+    end.appendChild(endButton);
+    end.appendChild(scoreEnd);
 }
 
 function restart() {
