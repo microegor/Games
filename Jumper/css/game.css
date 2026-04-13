@@ -1,9 +1,23 @@
-.block{
+html, body {
+    margin: 0;
+    height: 100%;
+}
+
+.block {
     display: flex;
     align-items: center;
+    justify-content: center;
+    height: 100%;
 }
 
 .table{
     height: 100%;
     width: 500px;
+    background-color: aqua;
+    position: relative;
+}
+
+.jumper{
+    background-color: green;
+    position: absolute;
 }
