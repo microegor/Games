@@ -4,6 +4,9 @@ const jumper = document.createElement("div");
 let curTopPosition = 0;
 let isGameOver = false;
 let isStanding = false;
+let tick = 0;
+let jumpBuffer = 0;
+let isFalling = false;
 const fallSpeed = 20;
 
 let platforms = [];
@@ -40,16 +43,42 @@ function newJumper() {
 
 function getDown() {
     if (isGameOver) return;
+    if (isStanding) return;
 
-    if(isStanding == false){
-        curTopPosition = parseInt(jumper.style.top);
-        curTopPosition += fallSpeed;
-        jumper.style.top = curTopPosition + "px";
+    isFalling = true;
+
+    curTopPosition = parseInt(jumper.style.top);
+    curTopPosition += fallSpeed;
+    jumper.style.top = curTopPosition + "px";
+}
+
+function moveSide(e) {
+    if (e.repeat) return;
+    let left = parseInt(jumper.style.left);
+
+    if (e.code === "KeyA") {
+        if (left > 0) {
+            left -= 20;
+        } else {
+            left = 0;
+        }
+    } else if (e.code === "KeyD") {
+        if (left < table.offsetWidth - jumper.offsetWidth) {
+            left += 20;
+        } else {
+            left = table.offsetWidth - jumper.offsetWidth;
+        }
     }
+
+    jumper.style.left = left + "px";
 }
 
 function jump(e) {
-    if (!isGameOver && e.code === "Space" && isStanding) {
+    if (e.repeat) return;
+
+    if (!isGameOver && e.code === "Space" && (isStanding || jumpBuffer > 0)) {
+        isFalling = false;
+        
         curTopPosition = parseInt(jumper.style.top);
         curTopPosition -= 500;
 
@@ -59,36 +88,84 @@ function jump(e) {
 
         jumper.style.top = curTopPosition + "px";
         isStanding = false;
+        jumpBuffer = 0;
     }
 }
 
-function isColliding(a, b) {
-    const rect1 = a.getBoundingClientRect();
-    const rect2 = b.getBoundingClientRect();
+function isColliding(jumper, platform) {
+    const jLeft = jumper.offsetLeft;
+    const jRight = jumper.offsetLeft + jumper.offsetWidth;
+    const jBottom = jumper.offsetTop + jumper.offsetHeight;
 
-    return !(
-        rect1.right <= rect2.left ||
-        rect1.left >= rect2.right ||
-        rect1.bottom <= rect2.top ||
-        rect1.top >= rect2.bottom
+    const pLeft = platform.offsetLeft;
+    const pRight = platform.offsetLeft + platform.offsetWidth;
+    const pTop = platform.offsetTop;
+
+    return (
+        jRight > pLeft &&
+        jLeft < pRight &&
+        jBottom >= pTop &&
+        jBottom <= pTop + fallSpeed
     );
 }
 
-function colisionCheck(){
+function colisionCheck() {
+    let foundPlatform = false;
+
     for (let i = 0; i < platforms.length; i++) {
-        if (isColliding(jumper, platforms[i])) {
+        const platform = platforms[i];
+
+        const jBottom = jumper.offsetTop + jumper.offsetHeight;
+        const pTop = platform.offsetTop;
+
+        // 👇 добавили проверку падения сверху
+        if (
+            isFalling &&
+            isColliding(jumper, platform) &&
+            jBottom >= pTop &&
+            jBottom <= pTop + fallSpeed
+        ) {
+            foundPlatform = true;
             isStanding = true;
-            jumper.style.transition = "none";
-            curTopPosition = platforms[i].offsetTop - jumper.offsetHeight;
-            jumper.style.top = curTopPosition + "px";
-            jumper.offsetHeight;
-            jumper.style.transition = "top 0.5s ease";
+            isFalling = false;
+            jumpBuffer = 3;
+
+            const newTop = pTop - jumper.offsetHeight;
+
+            if (parseInt(jumper.style.top) !== newTop) {
+                jumper.style.transition = "left 0.5s ease";
+                curTopPosition = newTop;
+                jumper.style.top = curTopPosition + "px";
+                jumper.offsetHeight;
+
+                setTimeout(() => {
+                    jumper.style.transition = "top 0.5s ease, left 0.5s ease";
+                }, 0);
+            }
+
             break;
+        }
+    }
+
+    if (!foundPlatform) {
+        isStanding = false;
+
+        if (jumpBuffer > 0) {
+            jumpBuffer--;
         }
     }
 }
 
+
 newJumper();
 document.addEventListener("keydown", jump);
-setInterval(getDown, 50);
-setInterval(colisionCheck, 1);
+document.addEventListener("keydown", moveSide);
+setInterval(() => {
+    tick++;
+
+    colisionCheck();
+
+    if (tick % 5 === 0) {
+        getDown();
+    }
+}, 10);
