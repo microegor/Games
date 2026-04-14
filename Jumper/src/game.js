@@ -9,6 +9,9 @@ let jumpBuffer = 0;
 let isFalling = false;
 const fallSpeed = 20;
 
+
+const platformSpawnMin = 800;
+const platformSpawnMax = 1500;
 let platforms = [];
 
 function newPlatform(x, y) {
@@ -20,6 +23,33 @@ function newPlatform(x, y) {
 
     table.appendChild(platform);
     platforms.push(platform);
+}
+
+function spawnPlatformAtTop() {
+    const maxX = table.offsetWidth - 60;
+    const x = Math.floor(Math.random() * (maxX + 1));
+    const y = 0;
+
+    newPlatform(x, y);
+}
+
+function getRandomSpawnDelay() {
+    return Math.floor(
+        Math.random() * (platformSpawnMax - platformSpawnMin + 1)
+    ) + platformSpawnMin;
+}
+
+function startPlatformSpawn() {
+    function spawnLoop() {
+        if (isGameOver) return;
+
+        spawnPlatformAtTop();
+
+        const nextDelay = getRandomSpawnDelay();
+        setTimeout(spawnLoop, nextDelay);
+    }
+
+    spawnLoop();
 }
 
 function newJumper() {
@@ -46,10 +76,10 @@ function getDown() {
     if (isStanding) return;
 
     isFalling = true;
-
     curTopPosition = parseInt(jumper.style.top);
     curTopPosition += fallSpeed;
     jumper.style.top = curTopPosition + "px";
+    moveDown();
 }
 
 function moveSide(e) {
@@ -78,7 +108,7 @@ function jump(e) {
 
     if (!isGameOver && e.code === "Space" && (isStanding || jumpBuffer > 0)) {
         isFalling = false;
-        
+
         curTopPosition = parseInt(jumper.style.top);
         curTopPosition -= 500;
 
@@ -156,16 +186,34 @@ function colisionCheck() {
     }
 }
 
+function moveDown() {
+    for (let i = platforms.length - 1; i >= 0; i--) {
+        const platform = platforms[i];
+
+        let top = parseInt(platform.style.top);
+        top += 15;
+
+        platform.style.top = top + "px";
+        const delitTop = table.offsetHeight + 500;
+        // удалить платформу если ушла вниз
+        if (top > delitTop) {
+            platform.remove();
+            platforms.splice(i, 1);
+        }
+    }
+}
+
 
 newJumper();
+startPlatformSpawn();
 document.addEventListener("keydown", jump);
 document.addEventListener("keydown", moveSide);
 setInterval(() => {
     tick++;
 
-    colisionCheck();
-
     if (tick % 5 === 0) {
         getDown();
     }
+    
+    colisionCheck();
 }, 10);

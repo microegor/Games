@@ -25,6 +25,7 @@ html, body {
 }
 
 .platform{
+    transition: top 0.5s ease;
     position: absolute;
     background-color: black;
     width: 60px;
