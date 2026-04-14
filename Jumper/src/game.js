@@ -46,18 +46,6 @@ function getDown() {
         curTopPosition += fallSpeed;
         jumper.style.top = curTopPosition + "px";
     }
-
-    for (let i = 0; i < platforms.length; i++) {
-        if (isColliding(jumper, platforms[i])) {
-            isStanding = true;
-            jumper.style.transition = "none";
-            curTopPosition = platforms[i].offsetTop - jumper.offsetHeight;
-            jumper.style.top = curTopPosition + "px";
-            jumper.offsetHeight;
-            jumper.style.transition = "top 0.5s ease";
-            break;
-        }
-    }
 }
 
 function jump(e) {
