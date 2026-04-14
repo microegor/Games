@@ -7,6 +7,7 @@ let isStanding = false;
 let tick = 0;
 let jumpBuffer = 0;
 let isFalling = false;
+let lastMove = 0;
 const fallSpeed = 20;
 
 
@@ -69,6 +70,7 @@ function newJumper() {
     table.appendChild(jumper);
 
     newPlatform(positionLeft - width, positionTop + height);
+    newPlatform(positionLeft - 100, positionTop - 250);
 }
 
 function getDown() {
@@ -103,23 +105,19 @@ function moveSide(e) {
     jumper.style.left = left + "px";
 }
 
-function jump(e) {
-    if (e.repeat) return;
+function jump() {
+    isFalling = false;
 
-    if (!isGameOver && e.code === "Space" && (isStanding || jumpBuffer > 0)) {
-        isFalling = false;
+    curTopPosition = parseInt(jumper.style.top);
+    curTopPosition -= 500;
 
-        curTopPosition = parseInt(jumper.style.top);
-        curTopPosition -= 500;
-
-        if (curTopPosition < 0) {
-            curTopPosition = 0;
-        }
-
-        jumper.style.top = curTopPosition + "px";
-        isStanding = false;
-        jumpBuffer = 0;
+    if (curTopPosition < 0) {
+        curTopPosition = 0;
     }
+
+    jumper.style.top = curTopPosition + "px";
+    isStanding = false;
+    jumpBuffer = 0;
 }
 
 function isColliding(jumper, platform) {
@@ -131,12 +129,22 @@ function isColliding(jumper, platform) {
     const pRight = platform.offsetLeft + platform.offsetWidth;
     const pTop = platform.offsetTop;
 
-    return (
+    const collision = (
         jRight > pLeft &&
         jLeft < pRight &&
         jBottom >= pTop &&
-        jBottom <= pTop + fallSpeed
+        jBottom <= pTop + 5
     );
+
+    if (collision) {
+        for (let i = 0; i < platforms.length; i++) {
+            let top = parseInt(platforms[i].style.top);
+            top -= lastMove;
+            platforms[i].style.top = top + "px";
+        }
+    }
+
+    return collision;
 }
 
 function colisionCheck() {
@@ -148,7 +156,6 @@ function colisionCheck() {
         const jBottom = jumper.offsetTop + jumper.offsetHeight;
         const pTop = platform.offsetTop;
 
-        // 👇 добавили проверку падения сверху
         if (
             isFalling &&
             isColliding(jumper, platform) &&
@@ -158,20 +165,12 @@ function colisionCheck() {
             foundPlatform = true;
             isStanding = true;
             isFalling = false;
-            jumpBuffer = 3;
 
             const newTop = pTop - jumper.offsetHeight;
+            curTopPosition = newTop;
+            jumper.style.top = curTopPosition + "px";
 
-            if (parseInt(jumper.style.top) !== newTop) {
-                jumper.style.transition = "left 0.5s ease";
-                curTopPosition = newTop;
-                jumper.style.top = curTopPosition + "px";
-                jumper.offsetHeight;
-
-                setTimeout(() => {
-                    jumper.style.transition = "top 0.5s ease, left 0.5s ease";
-                }, 0);
-            }
+            jump(); // прыжок ПОСЛЕ фиксации на платформе
 
             break;
         }
@@ -187,16 +186,17 @@ function colisionCheck() {
 }
 
 function moveDown() {
+    lastMove = fallSpeed - 10;
+
     for (let i = platforms.length - 1; i >= 0; i--) {
         const platform = platforms[i];
 
         let top = parseInt(platform.style.top);
-        top += 15;
+        top += lastMove;
 
         platform.style.top = top + "px";
-        const delitTop = table.offsetHeight + 500;
-        // удалить платформу если ушла вниз
-        if (top > delitTop) {
+
+        if (top > table.offsetHeight) {
             platform.remove();
             platforms.splice(i, 1);
         }
@@ -206,14 +206,14 @@ function moveDown() {
 
 newJumper();
 startPlatformSpawn();
-document.addEventListener("keydown", jump);
 document.addEventListener("keydown", moveSide);
+
 setInterval(() => {
     tick++;
 
     if (tick % 5 === 0) {
         getDown();
     }
-    
+
     colisionCheck();
 }, 10);
