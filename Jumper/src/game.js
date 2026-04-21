@@ -76,7 +76,7 @@ function newJumper() {
     newPlatform(positionLeft - width, positionTop - 350);
     newPlatform(positionLeft - width, positionTop - 550);
 
-    isStanding = true;
+    isStanding = false;
     isFalling = false;
 }
 
