@@ -9,10 +9,12 @@ let jumpBuffer = 0;
 let isFalling = false;
 let lastMove = 0;
 const fallSpeed = 20;
+let prevBottom = 0;
+let moveLeft = false;
+let moveRight = false;
 
-
-const platformSpawnMin = 800;
-const platformSpawnMax = 1500;
+const platformSpawnMin = 1000;
+const platformSpawnMax = 3000;
 let platforms = [];
 
 function newPlatform(x, y) {
@@ -29,7 +31,7 @@ function newPlatform(x, y) {
 function spawnPlatformAtTop() {
     const maxX = table.offsetWidth - 60;
     const x = Math.floor(Math.random() * (maxX + 1));
-    const y = 0;
+    const y = -30;
 
     newPlatform(x, y);
 }
@@ -70,12 +72,19 @@ function newJumper() {
     table.appendChild(jumper);
 
     newPlatform(positionLeft - width, positionTop + height);
-    newPlatform(positionLeft - 100, positionTop - 250);
+    newPlatform(positionLeft - width, positionTop - 150);
+    newPlatform(positionLeft - width, positionTop - 350);
+    newPlatform(positionLeft - width, positionTop - 550);
+
+    isStanding = true;
+    isFalling = false;
 }
 
 function getDown() {
     if (isGameOver) return;
     if (isStanding) return;
+
+    prevBottom = jumper.offsetTop + jumper.offsetHeight;
 
     isFalling = true;
     curTopPosition = parseInt(jumper.style.top);
@@ -84,22 +93,18 @@ function getDown() {
     moveDown();
 }
 
-function moveSide(e) {
-    if (e.repeat) return;
+function updateMovement() {
     let left = parseInt(jumper.style.left);
 
-    if (e.code === "KeyA") {
-        if (left > 0) {
-            left -= 20;
-        } else {
-            left = 0;
-        }
-    } else if (e.code === "KeyD") {
-        if (left < table.offsetWidth - jumper.offsetWidth) {
-            left += 20;
-        } else {
-            left = table.offsetWidth - jumper.offsetWidth;
-        }
+    if (moveLeft) {
+        left -= 2;
+        if (left < 0) left = 0;
+    }
+
+    if (moveRight) {
+        left += 2;
+        const max = table.offsetWidth - jumper.offsetWidth;
+        if (left > max) left = max;
     }
 
     jumper.style.left = left + "px";
@@ -118,6 +123,8 @@ function jump() {
     jumper.style.top = curTopPosition + "px";
     isStanding = false;
     jumpBuffer = 0;
+
+    prevBottom = jumper.offsetTop + jumper.offsetHeight;
 }
 
 function isColliding(jumper, platform) {
@@ -129,22 +136,18 @@ function isColliding(jumper, platform) {
     const pRight = platform.offsetLeft + platform.offsetWidth;
     const pTop = platform.offsetTop;
 
-    const collision = (
+    const horizontalHit =
         jRight > pLeft &&
-        jLeft < pRight &&
-        jBottom >= pTop &&
-        jBottom <= pTop + 5
-    );
+        jLeft < pRight;
 
-    if (collision) {
-        for (let i = 0; i < platforms.length; i++) {
-            let top = parseInt(platforms[i].style.top);
-            top -= lastMove;
-            platforms[i].style.top = top + "px";
-        }
-    }
+    const crossedFromAbove =
+        prevBottom < pTop &&
+        jBottom >= pTop;
 
-    return collision;
+    const notTooDeep =
+        jBottom <= pTop + fallSpeed + lastMove;
+
+    return horizontalHit && crossedFromAbove && notTooDeep;
 }
 
 function colisionCheck() {
@@ -153,25 +156,19 @@ function colisionCheck() {
     for (let i = 0; i < platforms.length; i++) {
         const platform = platforms[i];
 
-        const jBottom = jumper.offsetTop + jumper.offsetHeight;
-        const pTop = platform.offsetTop;
-
         if (
             isFalling &&
-            isColliding(jumper, platform) &&
-            jBottom >= pTop &&
-            jBottom <= pTop + fallSpeed
+            isColliding(jumper, platform)
         ) {
             foundPlatform = true;
             isStanding = true;
             isFalling = false;
 
-            const newTop = pTop - jumper.offsetHeight;
-            curTopPosition = newTop;
+            const pTop = platform.offsetTop;
+            curTopPosition = pTop - jumper.offsetHeight;
             jumper.style.top = curTopPosition + "px";
 
-            jump(); // прыжок ПОСЛЕ фиксации на платформе
-
+            jump();
             break;
         }
     }
@@ -186,7 +183,7 @@ function colisionCheck() {
 }
 
 function moveDown() {
-    lastMove = fallSpeed - 10;
+    lastMove = 4;
 
     for (let i = platforms.length - 1; i >= 0; i--) {
         const platform = platforms[i];
@@ -196,7 +193,7 @@ function moveDown() {
 
         platform.style.top = top + "px";
 
-        if (top > table.offsetHeight) {
+        if (top > table.offsetHeight + 500) {
             platform.remove();
             platforms.splice(i, 1);
         }
@@ -206,10 +203,20 @@ function moveDown() {
 
 newJumper();
 startPlatformSpawn();
-document.addEventListener("keydown", moveSide);
+document.addEventListener("keydown", (e) => {
+    if (e.code === "KeyA") moveLeft = true;
+    if (e.code === "KeyD") moveRight = true;
+});
+
+document.addEventListener("keyup", (e) => {
+    if (e.code === "KeyA") moveLeft = false;
+    if (e.code === "KeyD") moveRight = false;
+});
 
 setInterval(() => {
     tick++;
+
+    updateMovement();
 
     if (tick % 5 === 0) {
         getDown();
