@@ -137,17 +137,14 @@ function isColliding(jumper, platform) {
     const pTop = platform.offsetTop;
 
     const horizontalHit =
-        jRight > pLeft &&
-        jLeft < pRight;
+        jRight > pLeft + 2 &&
+        jLeft < pRight - 2;
 
     const crossedFromAbove =
-        prevBottom < pTop &&
+        prevBottom <= pTop &&
         jBottom >= pTop;
 
-    const notTooDeep =
-        jBottom <= pTop + fallSpeed + lastMove;
-
-    return horizontalHit && crossedFromAbove && notTooDeep;
+    return horizontalHit && crossedFromAbove;
 }
 
 function colisionCheck() {
