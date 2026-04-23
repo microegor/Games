@@ -12,8 +12,8 @@ const fallSpeed = 13;
 let prevBottom = 0;
 let moveLeft = false;
 let moveRight = false;
-let prevTop = 0;
-
+let curTop = 0;
+let fall = true;
 
 const platformSpawnMin = 1000;
 const platformSpawnMax = 2800;
@@ -88,6 +88,8 @@ function getDown() {
 
     prevBottom = jumper.offsetTop + jumper.offsetHeight;
 
+    isFalling = true;
+
     curTopPosition = parseInt(jumper.style.top);
     curTopPosition += fallSpeed;
     jumper.style.top = curTopPosition + "px";
@@ -119,9 +121,9 @@ function jump() {
 
     if (curTopPosition < 0) {
         curTopPosition = 0;
-        curTopPosition = prevTop;
     }
 
+    Falling = false;
     jumper.style.top = curTopPosition + "px";
     isStanding = false;
     jumpBuffer = 0;
@@ -212,15 +214,15 @@ document.addEventListener("keyup", (e) => {
     if (e.code === "KeyD") moveRight = false;
 });
 
-prevTop = jumper.getBoundingClientRect().top;
-
 setInterval(() => {
     tick++;
 
-    const currentTop = jumper.getBoundingClientRect().top;
-    isFalling = currentTop > prevTop;
-    prevTop = currentTop;
     updateMovement();
+
+    curTop = jumper.getBoundingClientRect().top
+    if (curTop > curTopPosition) {
+        Falling = true;
+    }
 
     if (tick % 5 === 0) {
         getDown();
