@@ -12,8 +12,8 @@ const fallSpeed = 13;
 let prevBottom = 0;
 let moveLeft = false;
 let moveRight = false;
-let curTop = 0;
 let fall = true;
+let prevTop = 0;
 
 const platformSpawnMin = 1000;
 const platformSpawnMax = 2800;
@@ -217,21 +217,20 @@ document.addEventListener("keyup", (e) => {
 setInterval(() => {
     tick++;
 
-    updateMovement();
+    const currentTop = jumper.getBoundingClientRect().top;
+    const delta = currentTop - prevTop;
 
-    curTop = jumper.getBoundingClientRect().top
-    if (curTop > curTopPosition) {
+    if (delta > 0.5) {
         Falling = true;
-    }else{
+        jumper.style.backgroundImage = 'url("pictures/player_jump_down.png")';
+    } else if (delta < -0.5) {
         Falling = false;
+        jumper.style.backgroundImage = 'url("pictures/player_jump_up.png")';
     }
 
-    if (Falling != true) {
-        jumper.style.backgroundImage = 'url("pictures/player_jump_down.png")';
-    }
-    else {
-        jumper.style.backgroundImage = 'url("pictures/player_jump_down.png")';
-    }
+    prevTop = currentTop;
+
+    updateMovement();
 
     if (tick % 5 === 0) {
         getDown();
