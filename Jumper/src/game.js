@@ -13,7 +13,6 @@ let prevBottom = 0;
 let moveLeft = false;
 let moveRight = false;
 let prevTop = 0;
-let curTop = 0;
 
 
 const platformSpawnMin = 1000;
@@ -88,10 +87,6 @@ function getDown() {
     if (isStanding) return;
 
     prevBottom = jumper.offsetTop + jumper.offsetHeight;
-
-    curTop = jumper.getBoundingClientRect().top
-    if (prevTop < curTop)
-        isFalling = true;
 
     curTopPosition = parseInt(jumper.style.top);
     curTopPosition += fallSpeed;
@@ -217,9 +212,14 @@ document.addEventListener("keyup", (e) => {
     if (e.code === "KeyD") moveRight = false;
 });
 
+prevTop = jumper.getBoundingClientRect().top;
+
 setInterval(() => {
     tick++;
-    prevTop = curTopPosition;
+
+    const currentTop = jumper.getBoundingClientRect().top;
+    isFalling = currentTop > prevTop;
+    prevTop = currentTop;
     updateMovement();
 
     if (tick % 5 === 0) {
