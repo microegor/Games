@@ -8,13 +8,16 @@ let tick = 0;
 let jumpBuffer = 0;
 let isFalling = false;
 let lastMove = 0;
-const fallSpeed = 20;
+const fallSpeed = 13;
 let prevBottom = 0;
 let moveLeft = false;
 let moveRight = false;
+let prevTop = 0;
+let curTop = 0;
+
 
 const platformSpawnMin = 1000;
-const platformSpawnMax = 3000;
+const platformSpawnMax = 2800;
 let platforms = [];
 
 function newPlatform(x, y) {
@@ -86,7 +89,10 @@ function getDown() {
 
     prevBottom = jumper.offsetTop + jumper.offsetHeight;
 
-    isFalling = true;
+    curTop = jumper.getBoundingClientRect().top
+    if (prevTop < curTop)
+        isFalling = true;
+
     curTopPosition = parseInt(jumper.style.top);
     curTopPosition += fallSpeed;
     jumper.style.top = curTopPosition + "px";
@@ -97,12 +103,12 @@ function updateMovement() {
     let left = parseInt(jumper.style.left);
 
     if (moveLeft) {
-        left -= 2;
+        left -= 3;
         if (left < 0) left = 0;
     }
 
     if (moveRight) {
-        left += 2;
+        left += 3;
         const max = table.offsetWidth - jumper.offsetWidth;
         if (left > max) left = max;
     }
@@ -118,6 +124,7 @@ function jump() {
 
     if (curTopPosition < 0) {
         curTopPosition = 0;
+        curTopPosition = prevTop;
     }
 
     jumper.style.top = curTopPosition + "px";
@@ -212,7 +219,7 @@ document.addEventListener("keyup", (e) => {
 
 setInterval(() => {
     tick++;
-
+    prevTop = curTopPosition;
     updateMovement();
 
     if (tick % 5 === 0) {
