@@ -1,4 +1,5 @@
-html, body {
+html,
+body {
     margin: 0;
     height: 100%;
     overflow: hidden;
@@ -11,21 +12,24 @@ html, body {
     height: 100%;
 }
 
-.table{
+.table {
     height: 100%;
     width: 500px;
     background-color: aqua;
     position: relative;
 }
 
-.jumper{
-    background-color: green;
+.jumper {
     position: absolute;
     transition: top 0.5s ease;
     z-index: 999;
+    background-position: center;
+    background-size: 200%;
+    
+    background-image: url("../pictures/player_jump_down.png");
 }
 
-.platform{
+.platform {
     transition: top 0.5s ease;
     position: absolute;
     background-color: black;

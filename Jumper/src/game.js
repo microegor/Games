@@ -222,6 +222,15 @@ setInterval(() => {
     curTop = jumper.getBoundingClientRect().top
     if (curTop > curTopPosition) {
         Falling = true;
+    }else{
+        Falling = false;
+    }
+
+    if (Falling != true) {
+        jumper.style.backgroundImage = 'url("pictures/player_jump_down.png")';
+    }
+    else {
+        jumper.style.backgroundImage = 'url("pictures/player_jump_down.png")';
     }
 
     if (tick % 5 === 0) {
