@@ -19,6 +19,10 @@ const platformSpawnMin = 1000;
 const platformSpawnMax = 2800;
 let platforms = [];
 
+const killZone = document.getElementById("death")
+const height = table.offsetHeight - 5;
+killZone.style.top =  height + "px";
+
 function newPlatform(x, y) {
     const platform = document.createElement("div");
     platform.classList.add("platform");
@@ -164,13 +168,15 @@ function colisionCheck() {
             foundPlatform = true;
             isStanding = true;
             isFalling = false;
-
+            
             const pTop = platform.offsetTop;
             curTopPosition = pTop - jumper.offsetHeight;
             jumper.style.top = curTopPosition + "px";
-
+            
             jump();
             break;
+        }else if(isColliding(jumper, killZone)){
+            window.location.href = "end.html";            
         }
     }
 
