@@ -1,0 +1,13 @@
+.block {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.button{
+    padding: 20;
+    border-radius: 30;
+    background-color: aqua;
+    border: 5px solid black;
+}
