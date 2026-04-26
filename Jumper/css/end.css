@@ -1,4 +1,5 @@
 .block {
+    height: 100%;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -6,8 +7,11 @@
 }
 
 .button{
+    user-select: none;
     padding: 20;
     border-radius: 30;
     background-color: aqua;
     border: 5px solid black;
+    cursor: pointer;
+
 }
