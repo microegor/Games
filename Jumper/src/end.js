@@ -3,3 +3,7 @@ function link() {
 }
 
 document.getElementById("button").addEventListener("click", link)
+
+const score = localStorage.getItem("score");
+
+document.getElementById("score").textContent = score;

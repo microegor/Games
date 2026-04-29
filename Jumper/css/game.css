@@ -41,3 +41,7 @@ body {
     position: absolute;
     width: 100%;
 }
+
+.score{
+    font-size: 10;
+}

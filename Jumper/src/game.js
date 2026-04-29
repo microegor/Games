@@ -1,6 +1,7 @@
 const table = document.getElementById("table");
 const jumper = document.createElement("div");
 
+window.score = 0
 let curTopPosition = 0;
 let isGameOver = false;
 let isStanding = false;
@@ -21,7 +22,7 @@ let platforms = [];
 
 const killZone = document.getElementById("death")
 const height = table.offsetHeight - 5;
-killZone.style.top =  height + "px";
+killZone.style.top = height + "px";
 
 function newPlatform(x, y) {
     const platform = document.createElement("div");
@@ -168,15 +169,17 @@ function colisionCheck() {
             foundPlatform = true;
             isStanding = true;
             isFalling = false;
-            
+
             const pTop = platform.offsetTop;
             curTopPosition = pTop - jumper.offsetHeight;
             jumper.style.top = curTopPosition + "px";
-            
+
             jump();
             break;
-        }else if(isColliding(jumper, killZone)){
-            window.location.href = "end.html";            
+        } else if (isColliding(jumper, killZone)) {
+            window.location.href = "end.html";
+            localStorage.setItem("score", score);
+            window.location.href = "end.html";
         }
     }
 
@@ -240,6 +243,9 @@ setInterval(() => {
 
     if (tick % 5 === 0) {
         getDown();
+    }
+    if (tick % 100 === 0) {
+        score++;
     }
 
     colisionCheck();
