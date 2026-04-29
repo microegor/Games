@@ -246,6 +246,7 @@ setInterval(() => {
     }
     if (tick % 100 === 0) {
         score++;
+        document.getElementById("score").textContent = "Score: " + score;
     }
 
     colisionCheck();
