@@ -6,21 +6,42 @@
     align-items: center;
 }
 
-.button{
+.button {
     user-select: none;
     padding: 20;
-    border-radius: 30;
     background-color: aqua;
     border: 5px solid black;
     cursor: pointer;
-
 }
 
-#text{
+.textBuble {
+    padding: 20;
+    background-color: aqua;
+    border: 5px solid black;
+    margin: 30px;
+    border-radius: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
 
+.table {
+    border-radius: 30px;
+    background-color: aquamarine;
+    border: 5px solid black;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 500;
+    height: 400;
+}
+
+#text {
     font-size: 40;
 }
 
-.score{
+.score {
     font-size: 40;
 }
