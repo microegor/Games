@@ -15,8 +15,8 @@ body {
 .table {
     height: 100%;
     width: 500px;
-    background-color: aqua;
     position: relative;
+    background: linear-gradient(to bottom, #87CEEB 0%, #e0f7ff 100%);
 }
 
 .jumper {
@@ -35,6 +35,11 @@ body {
     background-color: black;
     width: 60px;
     height: 10px;
+    
+    background-image: url("../pictures/platform.png");
+    background-size: 200px 100px;
+    background-repeat: no-repeat;
+    background-position: center;
 }
 
 .death{
