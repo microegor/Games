@@ -12,6 +12,15 @@ body {
     height: 100%;
 }
 
+.block::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+
+    background: radial-gradient(circle at center, transparent 300px, rgba(0,0,0,0.4));
+    pointer-events: none;
+}
+
 .table {
     height: 100%;
     width: 500px;
