@@ -2,11 +2,17 @@ const canvas = document.getElementById("c");
 const ctx = canvas.getContext("2d");
 function drawPlayButton() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+
     ctx.beginPath();
     ctx.ellipse(50, 50, 50, 20, 0, 0, Math.PI * 2);
     ctx.fillStyle = "#2196f3";
     ctx.fill();
-     ctx.fillText("Play", 50, 50);
+
+    ctx.fillStyle = "white";
+    ctx.font = "18px Arial";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText("Play", 50, 50);
 }
 
 drawPlayButton();
@@ -23,6 +29,6 @@ canvas.addEventListener("click", function (event) {
     const distance = Math.sqrt(dx * dx + dy * dy);
 
     if (distance <= 60) {
-        alert("Play!");
+        window.location.href = "game.html";
     }
 });
