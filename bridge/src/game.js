@@ -1,7 +1,7 @@
 let phase = "waiting";
-let lastTimestamp; 
+let lastTimestamp;
 
-let heroX; 
+let heroX;
 let heroY;
 let sceneOffset;
 
@@ -16,13 +16,15 @@ const canvas = document.getElementById("game");
 
 const ctx = canvas.getContext("2d");
 
+const canvasWidth = 375;
+const canvasHeight = 375;
+const platformHeight = 100;
 
 const scoreElement = document.getElementById("score");
 const restartButton = document.getElementById("restart");
 
 
-resetGame();
-
+resetGame();  
 
 function resetGame() {
   phase = "waiting";
@@ -34,7 +36,7 @@ function resetGame() {
   generatePlatform();
   generatePlatform();
 
-  heroX = platforms[0].x + platforms[0].w - 30; 
+  heroX = platforms[0].x + platforms[0].w - 30;
   heroY = 0;
 
   sceneOffset = 0;
@@ -43,14 +45,31 @@ function resetGame() {
 
   score = 0;
 
-  restartButton.style.display = "none"; 
-  scoreElement.innerText = score; 
+  restartButton.style.display = "none";
+  scoreElement.innerText = score;
 
   draw();
 }
 
 function draw() {
-  
+  ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+
+  ctx.save();
+
+  ctx.translate(-sceneOffset, 0);
+
+  drawPlatforms();
+  drawHero();
+  drawSticks();
+
+  ctx.restore();
+}
+
+function drawPlatforms() {
+  platforms.forEach(({ x, w }) => {
+    ctx.fillStyle = "black";
+    ctx.fillRect(x, canvasHeight - platformHeight, w, platformHeight);
+  });
 }
 
 function generatePlatform() {
@@ -72,14 +91,46 @@ function generatePlatform() {
   platforms.push({ x, w });
 }
 
+function drawHero() {
+  const heroWidth = 20;
+  const heroHeight = 30;
+
+  ctx.fillStyle = "red";
+  ctx.fillRect(
+    heroX,
+    heroY + canvasHeight - platformHeight - heroHeight,
+    heroWidth,
+    heroHeight
+  );
+}
+
+function drawSticks() {
+  sticks.forEach((stick) => {
+    ctx.save();
+
+    ctx.translate(stick.x, canvasHeight - platformHeight);
+    ctx.rotate((Math.PI / 180) * stick.rotation);
+
+    // Draw stick
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.lineTo(0, -stick.length);
+    ctx.stroke();
+
+    // Restore transformations
+    ctx.restore();
+  });
+}
+
 window.addEventListener("mousedown", function (event) {
 
 });
 
 window.addEventListener("mouseup", function (event) {
-  
+
 });
 
 function animate(timestamp) {
-  
+
 }
