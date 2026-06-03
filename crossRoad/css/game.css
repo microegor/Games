@@ -7,11 +7,17 @@
 }
 
 .screen {
+    position: absolute;
     min-width: 500px;
     max-width: 800px;
-    min-height: 300px;
-    max-height: 500px;
+    min-height: 500px;
+    max-height: 800px;
     height: 50%;
     width: 50%;
     background-color: aqua;
+}
+
+.chiken{
+    background-color: yellow;
+    z-index: 1000;
 }
