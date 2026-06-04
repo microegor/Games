@@ -15,16 +15,23 @@ let targetY = chickenY;
 let isMoving = false;
 
 const chiken = document.createElement("div");
-chiken.classList.add("chiken");
-
-chiken.style.width = ChickenWidth + "px";
-chiken.style.height = ChickenHeight + "px";
-
 screen.appendChild(chiken);
+function createChiken(){
+    chiken.classList.add("chiken");
+    
+    chiken.style.width = ChickenWidth + "px";
+    chiken.style.height = ChickenHeight + "px";
+    
+}
 
 function drawChicken() {
   chiken.style.left = chickenX + "px";
   chiken.style.top = chickenY + "px";
+}
+
+function createCar(){
+    const car = document.createElement("div");
+    car.classList.add("car")
 }
 
 function moveToTarget() {
@@ -86,4 +93,5 @@ document.addEventListener("keydown", function(event) {
   moveToTarget();
 });
 
+createChiken();
 drawChicken();
