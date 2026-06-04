@@ -3,8 +3,8 @@ const screen = document.getElementById("screen");
 const ChickenWidth = 30;
 const ChickenHeight = 30;
 
-const step = 30;      
-const speed = 5;      
+const step = 30;
+const speed = 5;
 
 let chickenX = 300;
 let chickenY = 400;
@@ -14,14 +14,16 @@ let targetY = chickenY;
 
 let isMoving = false;
 
+let cars = [];
+
 const chiken = document.createElement("div");
 screen.appendChild(chiken);
-function createChiken(){
-    chiken.classList.add("chiken");
-    
-    chiken.style.width = ChickenWidth + "px";
-    chiken.style.height = ChickenHeight + "px";
-    
+function createChiken() {
+  chiken.classList.add("chiken");
+
+  chiken.style.width = ChickenWidth + "px";
+  chiken.style.height = ChickenHeight + "px";
+
 }
 
 function drawChicken() {
@@ -29,9 +31,24 @@ function drawChicken() {
   chiken.style.top = chickenY + "px";
 }
 
-function createCar(){
-    const car = document.createElement("div");
-    car.classList.add("car")
+
+function createCar(y, speed) {
+  const car = document.createElement("div");
+  car.classList.add("car");
+
+  car.style.position = "absolute";
+  car.style.width = "60px";
+  car.style.height = "30px";
+
+  const newCar = {
+    element: car,
+    x: -60,
+    y: y,
+    speed: speed
+  };
+
+  screen.appendChild(car);
+  cars.push(newCar);
 }
 
 function moveToTarget() {
@@ -71,8 +88,8 @@ function moveToTarget() {
   requestAnimationFrame(moveToTarget);
 }
 
-document.addEventListener("keydown", function(event) {
-     if (event.repeat) return; 
+document.addEventListener("keydown", function (event) {
+  if (event.repeat) return;
   if (isMoving) return;
 
   if (event.key === "ArrowRight") {
