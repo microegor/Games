@@ -28,27 +28,39 @@ function createChiken() {
 
 function drawChicken() {
   chiken.style.left = chickenX + "px";
-  chiken.style.top = chickenY + "px";
 }
 
 
-function createCar(y, speed) {
+function createCar(y) {
   const car = document.createElement("div");
   car.classList.add("car");
 
   car.style.position = "absolute";
   car.style.width = "60px";
   car.style.height = "30px";
+  car.style.top = y;
 
   const newCar = {
     element: car,
     x: -60,
     y: y,
-    speed: speed
   };
 
   screen.appendChild(car);
   cars.push(newCar);
+}
+
+function reDraw() {
+  for (let i = 0; i < cars.length; i++) {
+    cars[i].element.style.left = cars[i].x + "px";
+    cars[i].element.style.top = cars[i].y + "px";
+  }
+}
+
+function moveMapY() {
+  for (let i = 0; i < cars.length; i++) {
+    cars[i] -= chickenY;
+  }
 }
 
 function moveToTarget() {
@@ -62,25 +74,13 @@ function moveToTarget() {
     chickenX -= speed;
   }
 
-  if (chickenY < targetY) {
-    chickenY += speed;
-  }
-
-  if (chickenY > targetY) {
-    chickenY -= speed;
-  }
-
   if (Math.abs(chickenX - targetX) < speed) {
     chickenX = targetX;
   }
 
-  if (Math.abs(chickenY - targetY) < speed) {
-    chickenY = targetY;
-  }
-
   drawChicken();
 
-  if (chickenX === targetX && chickenY === targetY) {
+  if (chickenX === targetX) {
     isMoving = false;
     return;
   }
@@ -112,3 +112,5 @@ document.addEventListener("keydown", function (event) {
 
 createChiken();
 drawChicken();
+
+setInterval();
