@@ -48,6 +48,7 @@ function createCar(y) {
 
   screen.appendChild(car);
   cars.push(newCar);
+  reDraw()
 }
 
 function reDraw() {
@@ -114,8 +115,9 @@ document.addEventListener("keydown", function (event) {
 
 createChiken();
 drawChicken();
-createCar(chickenY);
+createCar(chickenY - ChickenHeight);
 
 setInterval(function () {
-  createCar(chickenY - ChickenHeight);
-}, 1000);
+  const lastCar = cars[cars.length - 1];
+  createCar(lastCar.y - ChickenHeight);
+}, 10);
