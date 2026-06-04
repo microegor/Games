@@ -59,7 +59,7 @@ function reDraw() {
 
 function moveMapY() {
   for (let i = 0; i < cars.length; i++) {
-    cars[i] -= chickenY;
+    cars[i].element.style.top += ChickenHeight;
   }
 }
 
@@ -101,9 +101,11 @@ document.addEventListener("keydown", function (event) {
   }
   // Реализация движения карты
   if (event.key === "ArrowUp") {
+    moveMapY();
   }
-
+  
   if (event.key === "ArrowDown") {
+    moveMapY();
   }
 
   isMoving = true;
@@ -112,5 +114,5 @@ document.addEventListener("keydown", function (event) {
 
 createChiken();
 drawChicken();
-
-setInterval();
+createCar(chickenY);
+setInterval(createCar(cars[i].element.style.top - ChickenHeight),50);
