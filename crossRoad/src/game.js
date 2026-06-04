@@ -28,6 +28,7 @@ function createChiken() {
 
 function drawChicken() {
   chiken.style.left = chickenX + "px";
+  chiken.style.top = chickenY + "px";
 }
 
 
@@ -38,7 +39,6 @@ function createCar(y) {
   car.style.position = "absolute";
   car.style.width = "60px";
   car.style.height = "30px";
-  car.style.top = y;
 
   const newCar = {
     element: car,
@@ -103,7 +103,7 @@ document.addEventListener("keydown", function (event) {
   if (event.key === "ArrowUp") {
     moveMapY();
   }
-  
+
   if (event.key === "ArrowDown") {
     moveMapY();
   }
@@ -115,4 +115,7 @@ document.addEventListener("keydown", function (event) {
 createChiken();
 drawChicken();
 createCar(chickenY);
-setInterval(createCar(cars[i].element.style.top - ChickenHeight),50);
+
+setInterval(function () {
+  createCar(chickenY - ChickenHeight);
+}, 1000);
