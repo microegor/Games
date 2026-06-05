@@ -58,55 +58,70 @@ function reDraw() {
   }
 }
 
-function moveMapY() {
+function moveMapYUP() {
   for (let i = 0; i < cars.length; i++) {
-    cars[i].element.style.top += ChickenHeight;
+    cars[i].y += ChickenHeight;
+  }
+}
+
+function moveMapYDown() {
+  for (let i = 0; i < cars.length; i++) {
+    cars[i].y -= ChickenHeight;
   }
 }
 
 function moveToTarget() {
   if (!isMoving) return;
-
+  
   if (chickenX < targetX) {
     chickenX += speed;
   }
-
+  
   if (chickenX > targetX) {
     chickenX -= speed;
   }
-
+  
   if (Math.abs(chickenX - targetX) < speed) {
     chickenX = targetX;
   }
-
+  
   drawChicken();
-
+  
   if (chickenX === targetX) {
     isMoving = false;
     return;
   }
-
+  
   requestAnimationFrame(moveToTarget);
+}
+
+function removeFirstCar() {
+  const firstCar = cars.shift();
+  
+  if (firstCar) {
+    firstCar.element.remove();
+  }
 }
 
 document.addEventListener("keydown", function (event) {
   if (event.repeat) return;
+  reDraw()
   if (isMoving) return;
-
+  
   if (event.key === "ArrowRight") {
     targetX = chickenX + step;
   }
-
+  
   if (event.key === "ArrowLeft") {
     targetX = chickenX - step;
   }
   // Реализация движения карты
   if (event.key === "ArrowUp") {
-    moveMapY();
+    moveMapYUP();
   }
 
   if (event.key === "ArrowDown") {
-    moveMapY();
+    moveMapYDown();
   }
 
   isMoving = true;
@@ -115,9 +130,11 @@ document.addEventListener("keydown", function (event) {
 
 createChiken();
 drawChicken();
-createCar(chickenY - ChickenHeight);
+createCar(chickenY - 4 * ChickenHeight);
 
 setInterval(function () {
   const lastCar = cars[cars.length - 1];
-  createCar(lastCar.y - ChickenHeight);
-}, 10);
+  if(cars.length < 30){
+    createCar(lastCar.y - 2 * ChickenHeight);
+  }
+}, 100);
