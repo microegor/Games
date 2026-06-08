@@ -85,38 +85,18 @@ function moveMapYDown() {
 function moveX() {
   for (let i = 0; i < cars.length; i++) {
     if (cars[i].dir == 1) {
-      switch (cars[i].speed){
-        case 1:
-          cars[i].x += 1;
-          break;
-        case 2:
-          cars[i].x += 2;
-          break;
-        case 3:
-          cars[i].x += 3;
-          break;
-      }
-      
+      cars[i].x += cars[i].speed;
+
       if (cars[i].x >= ScreenWidth) {
         cars[i].x = -CarWidth;
+        cars[i].speed = Math.floor(Math.random() * 3) + 1;
       }
-    }
-    
-    else if (cars[i].dir == 2) {
-      switch (cars[i].speed){
-        case 1:
-          cars[i].x -= 1;
-          break;
-        case 2:
-          cars[i].x -= 2;
-          break;
-        case 3:
-          cars[i].x -= 3;
-          break;
-      }
-      
+    } else if (cars[i].dir == 2) {
+      cars[i].x -= cars[i].speed;
+
       if (cars[i].x <= -CarWidth) {
         cars[i].x = ScreenWidth;
+        cars[i].speed = Math.floor(Math.random() * 3) + 1;
       }
     }
   }
@@ -183,13 +163,13 @@ document.addEventListener("keydown", function (event) {
 
 createChiken();
 drawChicken();
-createCar(chickenY - 4 * ChickenHeight, Math.floor(Math.random() * 2) + 1);
+createCar(chickenY - 4 * ChickenHeight, Math.floor(Math.random() * 2) + 1,Math.floor(Math.random() * 3) + 1);
 
 setInterval(function () {
   const lastCar = cars[cars.length - 1];
   if (cars.length < 30) {
     const dir = Math.floor(Math.random() * 2) + 1;
-    const height = Math.floor(Math.random() * 5) + 2;
+    const height = Math.floor(Math.random() * 5) + 1;
     const speedc = Math.floor(Math.random() * 3) + 1;
     createCar(lastCar.y - height * ChickenHeight, dir,speed);
   }
