@@ -6,7 +6,10 @@ const ChickenHeight = 30;
 const step = 30;
 const speed = 5;
 
-let chickenX = 300;
+const ScreenWidth = 500;
+const CarWidth = 60;
+
+let chickenX = 250;
 let chickenY = 400;
 
 let targetX = chickenX;
@@ -32,7 +35,7 @@ function drawChicken() {
 }
 
 
-function createCar(y) {
+function createCar(y, dir) {
   const car = document.createElement("div");
   car.classList.add("car");
 
@@ -40,10 +43,18 @@ function createCar(y) {
   car.style.width = "60px";
   car.style.height = "30px";
 
+  let x;
+  if (dir == 1) {
+    x = -CarWidth;
+  } else {
+    x = ScreenWidth;
+  }
+
   const newCar = {
     element: car,
-    x: -60,
+    x: x,
     y: y,
+    dir: dir,
   };
 
   screen.appendChild(car);
@@ -70,34 +81,44 @@ function moveMapYDown() {
   }
 }
 
+function moveX() {
+  for (let i = 0; i < cars.length; i++) {
+    if (cars[i].dir == 1) {
+      cars[i].x += 1;
+    } else if(cars[i].dir == 2){
+      cars[i].x -= 1;
+    }
+  }
+}
+
 function moveToTarget() {
   if (!isMoving) return;
-  
+
   if (chickenX < targetX) {
     chickenX += speed;
   }
-  
+
   if (chickenX > targetX) {
     chickenX -= speed;
   }
-  
+
   if (Math.abs(chickenX - targetX) < speed) {
     chickenX = targetX;
   }
-  
+
   drawChicken();
-  
+
   if (chickenX === targetX) {
     isMoving = false;
     return;
   }
-  
+
   requestAnimationFrame(moveToTarget);
 }
 
 function removeFirstCar() {
   const firstCar = cars.shift();
-  
+
   if (firstCar) {
     firstCar.element.remove();
   }
@@ -107,11 +128,11 @@ document.addEventListener("keydown", function (event) {
   if (event.repeat) return;
   reDraw()
   if (isMoving) return;
-  
+
   if (event.key === "ArrowRight") {
     targetX = chickenX + step;
   }
-  
+
   if (event.key === "ArrowLeft") {
     targetX = chickenX - step;
   }
@@ -130,11 +151,18 @@ document.addEventListener("keydown", function (event) {
 
 createChiken();
 drawChicken();
-createCar(chickenY - 4 * ChickenHeight);
+createCar(chickenY - 4 * ChickenHeight, Math.floor(Math.random() * 2) + 1);
 
 setInterval(function () {
   const lastCar = cars[cars.length - 1];
-  if(cars.length < 30){
-    createCar(lastCar.y - 2 * ChickenHeight);
+  if (cars.length < 30) {
+    const dir = Math.floor(Math.random() * 2) + 1;
+    const height = Math.floor(Math.random() * 5) + 2;
+    createCar(lastCar.y - height * ChickenHeight, dir);
   }
 }, 100);
+
+setInterval(function () {
+  moveX();
+  reDraw()
+},10);
