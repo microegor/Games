@@ -7,6 +7,7 @@ const step = 30;
 const speed = 5;
 
 const ScreenWidth = 500;
+const ScreenHeigth = 500;
 const CarWidth = 60;
 
 let chickenX = 250;
@@ -18,6 +19,8 @@ let targetY = chickenY;
 let isMoving = false;
 
 let cars = [];
+
+let gameOver = false;
 
 const chiken = document.createElement("div");
 screen.appendChild(chiken);
@@ -70,9 +73,18 @@ function reDraw() {
   }
 }
 
+
 function moveMapYUP() {
   for (let i = 0; i < cars.length; i++) {
     cars[i].y += ChickenHeight;
+  }
+}
+
+function checkCollisions() {
+  for (let i = 0; i < cars.length; i++) {
+    if (isChickenCollidingWithCar(cars[i])) {
+      gameOver = true;
+    }
   }
 }
 
@@ -102,6 +114,32 @@ function moveX() {
   }
 }
 
+function isColliding(a, b) {
+  return (
+    a.x < b.x + b.width &&
+    a.x + a.width > b.x &&
+    a.y < b.y + b.height &&
+    a.y + a.height > b.y
+  );
+}
+
+function isChickenCollidingWithCar(car) {
+  const chicken = {
+    x: chickenX,
+    y: chickenY,
+    width: ChickenWidth,
+    height: ChickenHeight,
+  };
+
+  const carBox = {
+    x: car.x,
+    y: car.y,
+    width: CarWidth,
+    height: 30,
+  };
+
+  return isColliding(chicken, carBox);
+}
 
 function moveToTarget() {
   if (!isMoving) return;
@@ -136,6 +174,15 @@ function removeFirstCar() {
   }
 }
 
+function removeCarsOutsideScreen() {
+  for (let i = cars.length - 1; i >= 0; i--) {
+    if (cars[i].y > ScreenHeigth) {
+      cars[i].element.remove();
+      cars.splice(i, 1);
+    }
+  }
+}
+
 document.addEventListener("keydown", function (event) {
   if (event.repeat) return;
   reDraw()
@@ -153,9 +200,9 @@ document.addEventListener("keydown", function (event) {
     moveMapYUP();
   }
 
-  if (event.key === "ArrowDown") {
-    moveMapYDown();
-  }
+  // if (event.key === "ArrowDown") {
+  //   moveMapYDown();
+  // }
 
   isMoving = true;
   moveToTarget();
@@ -163,7 +210,7 @@ document.addEventListener("keydown", function (event) {
 
 createChiken();
 drawChicken();
-createCar(chickenY - 4 * ChickenHeight, Math.floor(Math.random() * 2) + 1,Math.floor(Math.random() * 3) + 1);
+createCar(chickenY - 4 * ChickenHeight, Math.floor(Math.random() * 2) + 1, Math.floor(Math.random() * 3) + 1);
 
 setInterval(function () {
   const lastCar = cars[cars.length - 1];
@@ -171,11 +218,12 @@ setInterval(function () {
     const dir = Math.floor(Math.random() * 2) + 1;
     const height = Math.floor(Math.random() * 5) + 1;
     const speedc = Math.floor(Math.random() * 3) + 1;
-    createCar(lastCar.y - height * ChickenHeight, dir,speed);
+    createCar(lastCar.y - height * ChickenHeight, dir, speedc);
   }
 }, 100);
 
 setInterval(function () {
   moveX();
   reDraw()
+  removeCarsOutsideScreen()
 }, 10);
