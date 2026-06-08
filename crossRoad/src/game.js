@@ -35,7 +35,7 @@ function drawChicken() {
 }
 
 
-function createCar(y, dir) {
+function createCar(y, dir, speed) {
   const car = document.createElement("div");
   car.classList.add("car");
 
@@ -55,6 +55,7 @@ function createCar(y, dir) {
     x: x,
     y: y,
     dir: dir,
+    speed: speed,
   };
 
   screen.appendChild(car);
@@ -84,12 +85,43 @@ function moveMapYDown() {
 function moveX() {
   for (let i = 0; i < cars.length; i++) {
     if (cars[i].dir == 1) {
-      cars[i].x += 1;
-    } else if(cars[i].dir == 2){
-      cars[i].x -= 1;
+      switch (cars[i].speed){
+        case 1:
+          cars[i].x += 1;
+          break;
+        case 2:
+          cars[i].x += 2;
+          break;
+        case 3:
+          cars[i].x += 3;
+          break;
+      }
+      
+      if (cars[i].x >= ScreenWidth) {
+        cars[i].x = -CarWidth;
+      }
+    }
+    
+    else if (cars[i].dir == 2) {
+      switch (cars[i].speed){
+        case 1:
+          cars[i].x -= 1;
+          break;
+        case 2:
+          cars[i].x -= 2;
+          break;
+        case 3:
+          cars[i].x -= 3;
+          break;
+      }
+      
+      if (cars[i].x <= -CarWidth) {
+        cars[i].x = ScreenWidth;
+      }
     }
   }
 }
+
 
 function moveToTarget() {
   if (!isMoving) return;
@@ -158,11 +190,12 @@ setInterval(function () {
   if (cars.length < 30) {
     const dir = Math.floor(Math.random() * 2) + 1;
     const height = Math.floor(Math.random() * 5) + 2;
-    createCar(lastCar.y - height * ChickenHeight, dir);
+    const speedc = Math.floor(Math.random() * 3) + 1;
+    createCar(lastCar.y - height * ChickenHeight, dir,speed);
   }
 }, 100);
 
 setInterval(function () {
   moveX();
   reDraw()
-},10);
+}, 10);
