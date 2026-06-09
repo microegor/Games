@@ -1,0 +1,106 @@
+import {
+  ScreenWidth,
+  ScreenHeight,
+  ChickenHeight,
+  CarWidth,
+  CarHeight,
+} from "./config.js";
+
+import { state } from "./state.js";
+
+let screen;
+
+export function initCars(screenElement) {
+  screen = screenElement;
+}
+
+export function createCar(y, dir, speed) {
+  const car = document.createElement("div");
+  car.classList.add("car");
+
+  car.style.width = CarWidth + "px";
+  car.style.height = CarHeight + "px";
+
+  let x;
+
+  if (dir === 1) {
+    x = -CarWidth;
+  } else {
+    x = ScreenWidth;
+  }
+
+  const newCar = {
+    element: car,
+    x: x,
+    y: y,
+    dir: dir,
+    speed: speed,
+  };
+
+  screen.appendChild(car);
+  state.cars.push(newCar);
+
+  redrawCars();
+}
+
+export function redrawCars() {
+  for (let i = 0; i < state.cars.length; i++) {
+    state.cars[i].element.style.left = state.cars[i].x + "px";
+    state.cars[i].element.style.top = state.cars[i].y + "px";
+  }
+}
+
+export function moveCarsX() {
+  for (let i = 0; i < state.cars.length; i++) {
+    const car = state.cars[i];
+
+    if (car.dir === 1) {
+      car.x += car.speed;
+
+      if (car.x >= ScreenWidth) {
+        car.x = -CarWidth;
+        car.speed = getRandomCarSpeed();
+      }
+    } else if (car.dir === 2) {
+      car.x -= car.speed;
+
+      if (car.x <= -CarWidth) {
+        car.x = ScreenWidth;
+        car.speed = getRandomCarSpeed();
+      }
+    }
+  }
+}
+
+export function moveMapYUp() {
+  for (let i = 0; i < state.cars.length; i++) {
+    state.cars[i].y += ChickenHeight;
+  }
+}
+
+export function moveMapYDown() {
+  for (let i = 0; i < state.cars.length; i++) {
+    state.cars[i].y -= ChickenHeight;
+  }
+}
+
+export function removeCarsOutsideScreen() {
+  for (let i = state.cars.length - 1; i >= 0; i--) {
+    if (state.cars[i].y > ScreenHeight) {
+      state.cars[i].element.remove();
+      state.cars.splice(i, 1);
+    }
+  }
+}
+
+export function getRandomCarDirection() {
+  return Math.floor(Math.random() * 2) + 1;
+}
+
+export function getRandomCarSpeed() {
+  return Math.floor(Math.random() * 3) + 1;
+}
+
+export function getRandomCarDistance() {
+  return Math.floor(Math.random() * 5) + 1;
+}

@@ -84,6 +84,8 @@ function checkCollisions() {
   for (let i = 0; i < cars.length; i++) {
     if (isChickenCollidingWithCar(cars[i])) {
       gameOver = true;
+      console.log("GAME OVER");
+      return;
     }
   }
 }
@@ -186,31 +188,34 @@ function removeCarsOutsideScreen() {
 document.addEventListener("keydown", function (event) {
   if (event.repeat) return;
   reDraw()
-  if (isMoving) return;
-
-  if (event.key === "ArrowRight") {
-    targetX = chickenX + step;
+  if(!gameOver){
+    if (isMoving) return;
+  
+    if (event.key === "ArrowRight") {
+      targetX = chickenX + step;
+    }
+  
+    if (event.key === "ArrowLeft") {
+      targetX = chickenX - step;
+    }
+    // Реализация движения карты
+    if (event.key === "ArrowUp") {
+      moveMapYUP();
+    }
+  
+    // if (event.key === "ArrowDown") {
+    //   moveMapYDown();
+    // }
+  
+    isMoving = true;
+    moveToTarget();
   }
-
-  if (event.key === "ArrowLeft") {
-    targetX = chickenX - step;
-  }
-  // Реализация движения карты
-  if (event.key === "ArrowUp") {
-    moveMapYUP();
-  }
-
-  // if (event.key === "ArrowDown") {
-  //   moveMapYDown();
-  // }
-
-  isMoving = true;
-  moveToTarget();
 });
 
 createChiken();
 drawChicken();
 createCar(chickenY - 4 * ChickenHeight, Math.floor(Math.random() * 2) + 1, Math.floor(Math.random() * 3) + 1);
+
 
 setInterval(function () {
   const lastCar = cars[cars.length - 1];
@@ -223,7 +228,10 @@ setInterval(function () {
 }, 100);
 
 setInterval(function () {
+  if (gameOver) return;
+
   moveX();
-  reDraw()
-  removeCarsOutsideScreen()
+  checkCollisions();
+  removeCarsOutsideScreen();
+  reDraw();
 }, 10);
