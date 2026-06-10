@@ -91,9 +91,33 @@ export function moveCarsX() {
 }
 
 export function moveMapYUp() {
-  for (let i = 0; i < state.cars.length; i++) {
-    state.cars[i].y += ChickenHeight;
+  if (state.isMapMoving) return;
+
+  state.isMapMoving = true;
+
+  const targetMove = ChickenHeight * 0.7;
+  let moved = 0;
+  const mapSpeed = 4;
+
+  function animate() {
+    const move = Math.min(mapSpeed, targetMove - moved);
+
+    for (let i = 0; i < state.cars.length; i++) {
+      state.cars[i].y += move;
+    }
+
+    moved += move;
+
+    redrawCars();
+
+    if (moved < targetMove) {
+      requestAnimationFrame(animate);
+    } else {
+      state.isMapMoving = false;
+    }
   }
+
+  requestAnimationFrame(animate);
 }
 
 export function moveMapYDown() {
