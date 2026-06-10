@@ -5,7 +5,9 @@ export const state = {
   targetX: 250,
   targetY: 400,
 
+  isMapMoving: false,
   isMoving: false,
   cars: [],
+  rivers: [],
   gameOver: false,
 };

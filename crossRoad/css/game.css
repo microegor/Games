@@ -55,3 +55,22 @@ body {
     transparent 80px
   );
 }
+
+.river {
+  position: absolute;
+  background-color: blue;
+  z-index: 1;
+}
+
+.log {
+  position: absolute;
+  background-color: saddlebrown;
+  border-radius: 10px;
+  z-index: 2;
+}
+
+.chicken {
+  position: absolute;
+  background-color: yellow;
+  z-index: 5;
+}

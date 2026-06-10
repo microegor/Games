@@ -9,3 +9,6 @@ export const ScreenHeight = 500;
 
 export const CarWidth = 60;
 export const CarHeight = 30;
+
+export const LogWidth = 90;
+export const LogHeight = 25;

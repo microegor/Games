@@ -6,6 +6,7 @@ import {
   CarHeight,
 } from "./config.js";
 
+import { moveRiversYUp, redrawRivers } from "./rivers.js";
 import { state } from "./state.js";
 
 let screen;
@@ -61,10 +62,16 @@ export function createCar(y, dir, speed) {
 
 export function redrawCars() {
   for (let i = 0; i < state.cars.length; i++) {
-    state.cars[i].element.style.left = state.cars[i].x + "px";
-    state.cars[i].element.style.top = state.cars[i].y + "px";
-    state.cars[i].road.style.top = state.cars[i].y - 5 + "px";
-    state.cars[i].line.style.top = state.cars[i].y + 13 + "px";
+    const car = state.cars[i];
+
+    car.element.style.left = car.x + "px";
+    car.element.style.top = car.y + "px";
+
+    car.road.style.left = "0px";
+    car.road.style.top = car.y - 5 + "px";
+
+    car.line.style.left = "0px";
+    car.line.style.top = car.y + 13 + "px";
   }
 }
 
@@ -106,9 +113,13 @@ export function moveMapYUp() {
       state.cars[i].y += move;
     }
 
+    moveRiversYUp(move);
+
+    state.lastLaneY += move;
     moved += move;
 
     redrawCars();
+    redrawRivers();
 
     if (moved < targetMove) {
       requestAnimationFrame(animate);
@@ -128,8 +139,13 @@ export function moveMapYDown() {
 
 export function removeCarsOutsideScreen() {
   for (let i = state.cars.length - 1; i >= 0; i--) {
-    if (state.cars[i].y > ScreenHeight) {
-      state.cars[i].element.remove();
+    const car = state.cars[i];
+
+    if (car.y > ScreenHeight) {
+      car.element.remove();
+      car.road.remove();
+      car.line.remove();
+
       state.cars.splice(i, 1);
     }
   }

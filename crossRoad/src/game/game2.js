@@ -14,7 +14,17 @@ import {
   getRandomCarDistance,
 } from "./cars.js";
 
-import { checkCollisions } from "./collision.js";
+import {
+  initRivers,
+  createRiver,
+  moveLogsX,
+  redrawRivers,
+  removeRiversOutsideScreen,
+  getRandomRiverDirection,
+  getRandomRiverSpeed,
+} from "./rivers.js";
+
+import { checkCollisions, checkRiverCollisions } from "./collision.js";
 import { initControls } from "./controls.js";
 
 const screen = document.getElementById("screen");
@@ -24,6 +34,7 @@ createChicken(screen);
 drawChicken();
 
 initCars(screen);
+initRivers(screen);
 
 createCar(
   state.chickenY - 4 * ChickenHeight,
@@ -31,27 +42,57 @@ createCar(
   getRandomCarSpeed()
 );
 
+createRiver(
+  state.chickenY - 8 * ChickenHeight,
+  getRandomRiverDirection(),
+  getRandomRiverSpeed()
+);
+
+state.lastLaneY = state.chickenY - 8 * ChickenHeight;
+
 initControls();
 
 setInterval(function () {
-  if (state.cars.length === 0) return;
+  if (state.gameOver) return;
 
-  const lastCar = state.cars[state.cars.length - 1];
+  if (state.cars.length + state.rivers.length >= 30) return;
 
-  if (state.cars.length < 30) {
-    const dir = getRandomCarDirection();
-    const height = getRandomCarDistance();
-    const speed = getRandomCarSpeed();
+  const height = getRandomCarDistance();
+  const y = state.lastLaneY - height * ChickenHeight;
 
-    createCar(lastCar.y - height * ChickenHeight, dir, speed);
+  const isRiver = Math.random() < 0.25;
+
+  if (isRiver) {
+    createRiver(
+      y,
+      getRandomRiverDirection(),
+      getRandomRiverSpeed()
+    );
+  } else {
+    createCar(
+      y,
+      getRandomCarDirection(),
+      getRandomCarSpeed()
+    );
   }
+
+  state.lastLaneY = y;
 }, 100);
 
 setInterval(function () {
   if (state.gameOver) return;
+
   scoreElement.textContent = "Score: " + state.score;
+
   moveCarsX();
+  moveLogsX();
+
   checkCollisions();
+  checkRiverCollisions();
+
   removeCarsOutsideScreen();
+  removeRiversOutsideScreen();
+
   redrawCars();
+  redrawRivers();
 }, 10);

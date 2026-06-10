@@ -1,0 +1,111 @@
+import {
+  ScreenWidth,
+  ScreenHeight,
+  ChickenHeight,
+  LogWidth,
+  LogHeight,
+} from "./config.js";
+
+import { state } from "./state.js";
+
+let screen;
+
+export function initRivers(screenElement) {
+  screen = screenElement;
+}
+
+export function createRiver(y, dir, speed) {
+  const river = document.createElement("div");
+  const log = document.createElement("div");
+
+  river.classList.add("river");
+  log.classList.add("log");
+
+  river.style.width = "100%";
+  river.style.height = ChickenHeight + "px";
+
+  log.style.width = LogWidth + "px";
+  log.style.height = LogHeight + "px";
+
+  let x;
+
+  if (dir === 1) {
+    x = -LogWidth;
+  } else {
+    x = ScreenWidth;
+  }
+
+  const newRiver = {
+    river: river,
+    log: log,
+    x: x,
+    y: y,
+    dir: dir,
+    speed: speed,
+  };
+
+  screen.appendChild(river);
+  screen.appendChild(log);
+
+  state.rivers.push(newRiver);
+
+  redrawRivers();
+}
+
+export function redrawRivers() {
+  for (let i = 0; i < state.rivers.length; i++) {
+    const river = state.rivers[i];
+
+    river.river.style.left = "0px";
+    river.river.style.top = river.y + "px";
+
+    river.log.style.left = river.x + "px";
+    river.log.style.top = river.y + ChickenHeight / 2 - LogHeight / 2 + "px";
+  }
+}
+
+export function moveLogsX() {
+  for (let i = 0; i < state.rivers.length; i++) {
+    const river = state.rivers[i];
+
+    if (river.dir === 1) {
+      river.x += river.speed;
+
+      if (river.x >= ScreenWidth) {
+        river.x = -LogWidth;
+        river.speed = getRandomRiverSpeed();
+      }
+    } else {
+      river.x -= river.speed;
+
+      if (river.x <= -LogWidth) {
+        river.x = ScreenWidth;
+        river.speed = getRandomRiverSpeed();
+      }
+    }
+  }
+}
+
+export function moveRiversYUp(amount) {
+  for (let i = 0; i < state.rivers.length; i++) {
+    state.rivers[i].y += amount;
+  }
+}
+
+export function removeRiversOutsideScreen() {
+  for (let i = state.rivers.length - 1; i >= 0; i--) {
+    if (state.rivers[i].y > ScreenHeight) {
+      state.rivers[i].river.remove();
+      state.rivers[i].log.remove();
+      state.rivers.splice(i, 1);
+    }
+  }
+}
+
+export function getRandomRiverDirection() {
+  return Math.floor(Math.random() * 2) + 1;
+}
+
+export function getRandomRiverSpeed() {
+  return Math.floor(Math.random() * 2) + 1;
+}
