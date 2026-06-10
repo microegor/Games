@@ -29,6 +29,7 @@ export function initControls() {
     if (event.key === "ArrowUp") {
       moveMapYUp();
       redrawCars();
+      state.score++;
     }
   });
 }

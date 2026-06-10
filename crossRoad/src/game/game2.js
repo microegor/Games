@@ -18,6 +18,7 @@ import { checkCollisions } from "./collision.js";
 import { initControls } from "./controls.js";
 
 const screen = document.getElementById("screen");
+const scoreElement = document.getElementById("score");
 
 createChicken(screen);
 drawChicken();
@@ -48,7 +49,7 @@ setInterval(function () {
 
 setInterval(function () {
   if (state.gameOver) return;
-
+  scoreElement.textContent = "Score: " + state.score;
   moveCarsX();
   checkCollisions();
   removeCarsOutsideScreen();
