@@ -16,10 +16,21 @@ export function initCars(screenElement) {
 
 export function createCar(y, dir, speed) {
   const car = document.createElement("div");
+  const road = document.createElement("div");
+  const line = document.createElement("div");
+
   car.classList.add("car");
+  road.classList.add("road");
+  line.classList.add("line");
 
   car.style.width = CarWidth + "px";
   car.style.height = CarHeight + "px";
+
+  road.style.width = "100%";
+  road.style.height = CarHeight + 10 + "px";
+
+  line.style.height = "5px";
+  line.style.width = "100%";
 
   let x;
 
@@ -31,13 +42,18 @@ export function createCar(y, dir, speed) {
 
   const newCar = {
     element: car,
+    road: road,
+    line: line,
     x: x,
     y: y,
     dir: dir,
     speed: speed,
   };
 
+  screen.appendChild(road);
+  screen.appendChild(line);
   screen.appendChild(car);
+
   state.cars.push(newCar);
 
   redrawCars();
@@ -47,6 +63,8 @@ export function redrawCars() {
   for (let i = 0; i < state.cars.length; i++) {
     state.cars[i].element.style.left = state.cars[i].x + "px";
     state.cars[i].element.style.top = state.cars[i].y + "px";
+    state.cars[i].road.style.top = state.cars[i].y - 5 + "px";
+    state.cars[i].line.style.top = state.cars[i].y + 13 + "px";
   }
 }
 

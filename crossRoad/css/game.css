@@ -21,13 +21,37 @@ body {
   overflow: hidden;
 }
 
-.chiken {
+.road{
   position: absolute;
-  background-color: yellow;
-  z-index: 1000;
+  background-color: gray;
+  z-index: 1;
+  display: flex;
+  justify-content: center;
 }
 
 .car {
   position: absolute;
   background-color: brown;
+  z-index: 3;
+}
+
+.chicken {
+  position: absolute;
+  background-color: yellow;
+  z-index: 4;
+}
+
+.line {
+  position: absolute;
+  height: 5px;
+  width: 100%;
+  z-index: 2;
+
+  background: repeating-linear-gradient(
+    to right,
+    white 0px,
+    white 40px,
+    transparent 40px,
+    transparent 80px
+  );
 }
