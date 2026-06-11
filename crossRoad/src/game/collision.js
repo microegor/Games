@@ -42,6 +42,7 @@ export function checkCollisions() {
     if (isChickenCollidingWithCar(state.cars[i])) {
       state.gameOver = true;
       console.log("GAME OVER");
+      alert("Game Over!");
       return;
     }
   }
@@ -83,14 +84,14 @@ export function checkRiverCollisions() {
 
       if (state.chickenX < 0 || state.chickenX + ChickenWidth > ScreenWidth) {
         state.gameOver = true;
-        alert("Game Over! Бревно унесло тебя");
+        alert("Game Over!");
       }
 
       return;
     }
 
     state.gameOver = true;
-    alert("Game Over! Ты упал в реку");
+    alert("Game Over!");
     return;
   }
 }
