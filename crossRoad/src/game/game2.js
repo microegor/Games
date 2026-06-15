@@ -29,6 +29,7 @@ import { initControls } from "./controls.js";
 
 const screen = document.getElementById("screen");
 const scoreElement = document.getElementById("score");
+const gameOverScreen = document.getElementById("game-over-screen")
 
 createChicken(screen);
 drawChicken();
@@ -51,6 +52,11 @@ createRiver(
 state.lastLaneY = state.chickenY - 8 * ChickenHeight;
 
 initControls();
+
+function showGameOverScreen() {
+  finalScoreElement.textContent = "Score: " + state.score;
+  gameOverScreen.classList.add("show");
+}
 
 setInterval(function () {
   if (state.gameOver) return;
