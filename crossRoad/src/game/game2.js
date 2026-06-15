@@ -29,7 +29,12 @@ import { initControls } from "./controls.js";
 
 const screen = document.getElementById("screen");
 const scoreElement = document.getElementById("score");
-const gameOverScreen = document.getElementById("game-over-screen")
+
+const gameOverScreen = document.getElementById("game-over-screen");
+const finalScoreElement = document.getElementById("final-score");
+const restartButton = document.getElementById("restart-button");
+
+let gameOverShown = false;
 
 createChicken(screen);
 drawChicken();
@@ -48,6 +53,10 @@ createRiver(
   getRandomRiverDirection(),
   getRandomRiverSpeed()
 );
+
+restartButton.addEventListener("click", function () {
+  location.reload();
+});
 
 state.lastLaneY = state.chickenY - 8 * ChickenHeight;
 
@@ -86,7 +95,14 @@ setInterval(function () {
 }, 100);
 
 setInterval(function () {
-  if (state.gameOver) return;
+  if (state.gameOver) {
+    if (!gameOverShown) {
+      showGameOverScreen();
+      gameOverShown = true;
+    }
+
+    return;
+  }
 
   scoreElement.textContent = "Score: " + state.score;
 

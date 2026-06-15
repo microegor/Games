@@ -5,7 +5,6 @@ import {
   CarWidth,
   CarHeight,
   LogWidth,
-  LogHeight,
   ScreenWidth,
 } from "./config.js";
 import { drawChicken } from "./chicken.js";
@@ -17,6 +16,13 @@ function isColliding(a, b) {
     a.y < b.y + b.height &&
     a.y + a.height > b.y
   );
+}
+
+function gameOver() {
+  if (state.gameOver) return;
+
+  state.gameOver = true;
+  console.log("GAME OVER");
 }
 
 function isChickenCollidingWithCar(car) {
@@ -40,9 +46,7 @@ function isChickenCollidingWithCar(car) {
 export function checkCollisions() {
   for (let i = 0; i < state.cars.length; i++) {
     if (isChickenCollidingWithCar(state.cars[i])) {
-      state.gameOver = true;
-      console.log("GAME OVER");
-      alert("Game Over!");
+      gameOver();
       return;
     }
   }
@@ -83,15 +87,13 @@ export function checkRiverCollisions() {
       drawChicken();
 
       if (state.chickenX < 0 || state.chickenX + ChickenWidth > ScreenWidth) {
-        state.gameOver = true;
-        alert("Game Over!");
+        gameOver();
       }
 
       return;
     }
 
-    state.gameOver = true;
-    alert("Game Over!");
+    gameOver();
     return;
   }
 }
