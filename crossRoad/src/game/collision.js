@@ -2,8 +2,6 @@ import { state } from "./state.js";
 import {
   ChickenWidth,
   ChickenHeight,
-  CarWidth,
-  CarHeight,
   LogWidth,
   ScreenWidth,
 } from "./config.js";
@@ -36,8 +34,8 @@ function isChickenCollidingWithCar(car) {
   const carBox = {
     x: car.x,
     y: car.y,
-    width: CarWidth,
-    height: CarHeight,
+    width: car.width,
+    height: car.height,
   };
 
   return isColliding(chicken, carBox);

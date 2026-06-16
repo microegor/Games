@@ -94,6 +94,8 @@ export function moveCarsX() {
       car.x += car.speed;
 
       if (car.x >= ScreenWidth) {
+        setCarSize(car, getRandomCarSize());
+
         car.x = -car.width;
         car.speed = getRandomCarSpeed();
       }
@@ -101,6 +103,8 @@ export function moveCarsX() {
       car.x -= car.speed;
 
       if (car.x <= -car.width) {
+        setCarSize(car, getRandomCarSize());
+
         car.x = ScreenWidth;
         car.speed = getRandomCarSpeed();
       }
@@ -183,4 +187,17 @@ export function getRandomCarSize() {
   ];
 
   return sizes[Math.floor(Math.random() * sizes.length)];
+}
+
+export function setCarSize(car, size) {
+  const carWidth = CarWidth * size;
+  const carHeight = CarHeight * size;
+
+  car.width = carWidth;
+  car.height = carHeight;
+
+  car.element.style.width = carWidth + "px";
+  car.element.style.height = carHeight + "px";
+
+  car.y = car.roadY + RoadHeight / 2 - carHeight / 2;
 }

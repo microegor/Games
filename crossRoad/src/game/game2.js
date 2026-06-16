@@ -13,6 +13,7 @@ import {
   getRandomCarSpeed,
   getRandomCarDistance,
   getRandomCarSize,
+  setCarSize,
 } from "./cars.js";
 
 import {
