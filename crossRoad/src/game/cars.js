@@ -16,7 +16,7 @@ export function initCars(screenElement) {
   screen = screenElement;
 }
 
-export function createCar(y, dir, speed) {
+export function createCar(y, dir, speed, size = 1) {
   const car = document.createElement("div");
   const road = document.createElement("div");
   const line = document.createElement("div");
@@ -25,8 +25,11 @@ export function createCar(y, dir, speed) {
   road.classList.add("road");
   line.classList.add("line");
 
-  car.style.width = CarWidth + "px";
-  car.style.height = CarHeight + "px";
+  const carWidth = CarWidth * size;
+  const carHeight = CarHeight * size;
+
+  car.style.width = carWidth + "px";
+  car.style.height = carHeight + "px";
 
   road.style.width = "100%";
   road.style.height = RoadHeight + "px";
@@ -37,7 +40,7 @@ export function createCar(y, dir, speed) {
   let x;
 
   if (dir === 1) {
-    x = -CarWidth;
+    x = -carWidth;
   } else {
     x = ScreenWidth;
   }
@@ -50,7 +53,10 @@ export function createCar(y, dir, speed) {
 
     roadY: y,
 
-    y: y + RoadHeight / 2 - CarHeight / 2,
+    y: y + RoadHeight / 2 - carHeight / 2,
+
+    width: carWidth,
+    height: carHeight,
 
     dir: dir,
     speed: speed,
@@ -88,13 +94,13 @@ export function moveCarsX() {
       car.x += car.speed;
 
       if (car.x >= ScreenWidth) {
-        car.x = -CarWidth;
+        car.x = -car.width;
         car.speed = getRandomCarSpeed();
       }
     } else if (car.dir === 2) {
       car.x -= car.speed;
 
-      if (car.x <= -CarWidth) {
+      if (car.x <= -car.width) {
         car.x = ScreenWidth;
         car.speed = getRandomCarSpeed();
       }
@@ -168,4 +174,13 @@ export function getRandomCarSpeed() {
 
 export function getRandomCarDistance() {
   return Math.floor(Math.random() * 5) + 1;
+}
+
+export function getRandomCarSize() {
+  const sizes = [
+    ChickenHeight / CarHeight,
+    1.5,
+  ];
+
+  return sizes[Math.floor(Math.random() * sizes.length)];
 }
