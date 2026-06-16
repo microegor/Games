@@ -12,3 +12,5 @@ export const CarHeight = 30;
 
 export const LogWidth = 90;
 export const LogHeight = 25;
+
+export const RoadHeight = ChickenHeight * 1.7;

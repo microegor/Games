@@ -4,6 +4,7 @@ import {
   ChickenHeight,
   CarWidth,
   CarHeight,
+  RoadHeight,
 } from "./config.js";
 
 import { moveRiversYUp, redrawRivers } from "./rivers.js";
@@ -28,7 +29,7 @@ export function createCar(y, dir, speed) {
   car.style.height = CarHeight + "px";
 
   road.style.width = "100%";
-  road.style.height = CarHeight + 10 + "px";
+  road.style.height = RoadHeight + "px";
 
   line.style.height = "5px";
   line.style.width = "100%";
@@ -46,7 +47,11 @@ export function createCar(y, dir, speed) {
     road: road,
     line: line,
     x: x,
-    y: y,
+
+    roadY: y,
+
+    y: y + RoadHeight / 2 - CarHeight / 2,
+
     dir: dir,
     speed: speed,
   };
@@ -68,10 +73,10 @@ export function redrawCars() {
     car.element.style.top = car.y + "px";
 
     car.road.style.left = "0px";
-    car.road.style.top = car.y - 5 + "px";
+    car.road.style.top = car.roadY + "px";
 
     car.line.style.left = "0px";
-    car.line.style.top = car.y + 13 + "px";
+    car.line.style.top = car.roadY + RoadHeight / 2 - 2.5 + "px";
   }
 }
 
@@ -111,6 +116,7 @@ export function moveMapYUp() {
 
     for (let i = 0; i < state.cars.length; i++) {
       state.cars[i].y += move;
+      state.cars[i].roadY += move;
     }
 
     moveRiversYUp(move);
@@ -134,6 +140,7 @@ export function moveMapYUp() {
 export function moveMapYDown() {
   for (let i = 0; i < state.cars.length; i++) {
     state.cars[i].y -= ChickenHeight;
+    state.cars[i].roadY -= ChickenHeight;
   }
 }
 
@@ -141,7 +148,7 @@ export function removeCarsOutsideScreen() {
   for (let i = state.cars.length - 1; i >= 0; i--) {
     const car = state.cars[i];
 
-    if (car.y > ScreenHeight) {
+    if (car.roadY > ScreenHeight) {
       car.element.remove();
       car.road.remove();
       car.line.remove();

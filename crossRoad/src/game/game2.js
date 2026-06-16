@@ -1,4 +1,4 @@
-import { ChickenHeight } from "./config.js";
+import { ChickenHeight, RoadHeight } from "./config.js";
 import { state } from "./state.js";
 
 import { createChicken, drawChicken } from "./chicken.js";
@@ -72,10 +72,13 @@ setInterval(function () {
 
   if (state.cars.length + state.rivers.length >= 30) return;
 
-  const height = getRandomCarDistance();
-  const y = state.lastLaneY - height * ChickenHeight;
-
   const isRiver = Math.random() < 0.25;
+
+  const laneHeight = isRiver ? ChickenHeight : RoadHeight;
+
+  const gap = getRandomCarDistance() * ChickenHeight;
+
+  const y = state.lastLaneY - laneHeight - gap;
 
   if (isRiver) {
     createRiver(
