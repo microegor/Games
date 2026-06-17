@@ -114,7 +114,7 @@ export function createCar(y, dir, speed, index) {
 
   car.style.width = carWidth + "px";
   car.style.height = carHeight + "px";
-  car.style.backgroundImage = `url("/crossRoad/pictures/${carInfo.img}")`;
+  car.style.backgroundImage = `url("../crossRoad/pictures/${carInfo.img}")`;
   if (dir === 1) {
     car.style.transform = "rotate(180deg)";
   } else {
@@ -289,7 +289,7 @@ export function setCarSize(car, index) {
 
   car.element.style.width = carWidth + "px";
   car.element.style.height = carHeight + "px";
-  car.element.style.backgroundImage = `url("/crossRoad/pictures/${carInfo.img}")`;
+  car.element.style.backgroundImage = `url("../crossRoad/pictures/${carInfo.img}")`;
 
   car.y = car.roadY + RoadHeight / 2 - carHeight / 2;
 }
