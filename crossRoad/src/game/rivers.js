@@ -26,6 +26,12 @@ export function createRiver(y, dir, speed) {
 
   log.style.width = LogWidth + "px";
   log.style.height = LogHeight + "px";
+  const random = Math.floor(Math.random() * 10);
+  if (random < 8) {
+    log.style.backgroundImage = `url("../crossRoad/pictures/tree.png")`;
+  } else {
+    log.style.backgroundImage = `url("../crossRoad/pictures/crocodile.png")`;
+  }
 
   let x;
 
@@ -33,6 +39,11 @@ export function createRiver(y, dir, speed) {
     x = -LogWidth;
   } else {
     x = ScreenWidth;
+  }
+  if (dir === 1) {
+    log.style.transform = "rotate(180deg)";
+  } else {
+    log.style.transform = "rotate(0deg)";
   }
 
   const newRiver = {
@@ -67,6 +78,7 @@ export function redrawRivers() {
 export function moveLogsX() {
   for (let i = 0; i < state.rivers.length; i++) {
     const river = state.rivers[i];
+    const log = river.log;
 
     if (river.dir === 1) {
       river.x += river.speed;
@@ -74,6 +86,12 @@ export function moveLogsX() {
       if (river.x >= ScreenWidth) {
         river.x = -LogWidth;
         river.speed = getRandomRiverSpeed();
+        const random = Math.floor(Math.random() * 10);
+        if (random < 8) {
+          log.style.backgroundImage = `url("../crossRoad/pictures/tree.png")`;
+        } else {
+          log.style.backgroundImage = `url("../crossRoad/pictures/crocodile.png")`;
+        }
       }
     } else {
       river.x -= river.speed;
@@ -81,6 +99,12 @@ export function moveLogsX() {
       if (river.x <= -LogWidth) {
         river.x = ScreenWidth;
         river.speed = getRandomRiverSpeed();
+        const random = Math.floor(Math.random() * 10);
+        if (random < 8) {
+          log.style.backgroundImage = `url("../crossRoad/pictures/tree.png")`;
+        } else {
+          log.style.backgroundImage = `url("../crossRoad/pictures/crocodile.png")`;
+        }
       }
     }
   }
