@@ -21,7 +21,7 @@ body {
   overflow: hidden;
 }
 
-.road{
+.road {
   position: absolute;
   background-color: gray;
   z-index: 1;
@@ -31,8 +31,13 @@ body {
 
 .car {
   position: absolute;
-  background-color: brown;
+  /* background-color: brown; */
   z-index: 3;
+
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  /* background-image: url("/crossRoad/pictures/car_01.png"); */
 }
 
 .chicken {
@@ -47,13 +52,11 @@ body {
   width: 100%;
   z-index: 2;
 
-  background: repeating-linear-gradient(
-    to right,
-    white 0px,
-    white 40px,
-    transparent 40px,
-    transparent 80px
-  );
+  background: repeating-linear-gradient(to right,
+      white 0px,
+      white 40px,
+      transparent 40px,
+      transparent 80px);
 }
 
 .river {
