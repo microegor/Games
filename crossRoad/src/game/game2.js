@@ -12,8 +12,8 @@ import {
   getRandomCarDirection,
   getRandomCarSpeed,
   getRandomCarDistance,
-  getRandomCarSize,
   setCarSize,
+  getRandomCarIndex,
 } from "./cars.js";
 
 import {
@@ -48,7 +48,7 @@ createCar(
   state.chickenY - 4 * ChickenHeight,
   getRandomCarDirection(),
   getRandomCarSpeed(),
-  getRandomCarSize()
+  getRandomCarIndex(),
 );
 
 createRiver(
@@ -94,7 +94,7 @@ setInterval(function () {
       y,
       getRandomCarDirection(),
       getRandomCarSpeed(),
-      getRandomCarSize()
+      getRandomCarIndex(),
     );
   }
 
