@@ -9,5 +9,6 @@ export const state = {
   isMoving: false,
   cars: [],
   rivers: [],
+  grassY: 0,
   gameOver: false,
 };

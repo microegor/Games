@@ -1,7 +1,6 @@
 import { ChickenWidth, ChickenHeight, speed } from "./config.js";
 import { state } from "./state.js";
-
-let chickenElement;
+export let chickenElement;
 
 export function createChicken(screen) {
   chickenElement = document.createElement("div");
@@ -24,10 +23,14 @@ export function moveToTarget() {
   if (!state.isMoving) return;
 
   if (state.chickenX < state.targetX) {
+    chickenElement.style.transform = "rotate(90deg)"
+
     state.chickenX += speed;
   }
 
   if (state.chickenX > state.targetX) {
+    chickenElement.style.transform = "rotate(270deg)"
+
     state.chickenX -= speed;
   }
 

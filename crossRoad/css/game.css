@@ -17,7 +17,7 @@ body {
   position: relative;
   overflow: hidden;
 
-  background-image: url("../crossRoad/pictures/grass.png");
+  background-image: url("../pictures/grass.png");
   width: 500px;
   height: 500px;
   background-repeat: repeat;

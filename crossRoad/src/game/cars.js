@@ -6,6 +6,7 @@ import {
   carScale,
 } from "./config.js";
 
+import { chickenElement } from "./chicken.js";
 
 import { moveRiversYUp, redrawRivers } from "./rivers.js";
 import { state } from "./state.js";
@@ -207,7 +208,7 @@ export function moveCarsX() {
 
 export function moveMapYUp() {
   if (state.isMapMoving) return;
-
+  chickenElement.style.transform = "rotate(0deg)"
   state.isMapMoving = true;
 
   const targetMove = ChickenHeight * 0.7;
@@ -215,27 +216,30 @@ export function moveMapYUp() {
   const mapSpeed = 4;
 
   function animate() {
-    const move = Math.min(mapSpeed, targetMove - moved);
+  const move = Math.min(mapSpeed, targetMove - moved);
 
-    for (let i = 0; i < state.cars.length; i++) {
-      state.cars[i].y += move;
-      state.cars[i].roadY += move;
-    }
-
-    moveRiversYUp(move);
-
-    state.lastLaneY += move;
-    moved += move;
-
-    redrawCars();
-    redrawRivers();
-
-    if (moved < targetMove) {
-      requestAnimationFrame(animate);
-    } else {
-      state.isMapMoving = false;
-    }
+  for (let i = 0; i < state.cars.length; i++) {
+    state.cars[i].y += move;
+    state.cars[i].roadY += move;
   }
+
+  moveRiversYUp(move);
+
+  state.grassY += move;
+
+  state.lastLaneY += move;
+  moved += move;
+
+  redrawCars();
+  redrawRivers();
+  redrawGrass();
+
+  if (moved < targetMove) {
+    requestAnimationFrame(animate);
+  } else {
+    state.isMapMoving = false;
+  }
+}
 
   requestAnimationFrame(animate);
 }
@@ -245,6 +249,8 @@ export function moveMapYDown() {
     state.cars[i].y -= ChickenHeight;
     state.cars[i].roadY -= ChickenHeight;
   }
+  state.grassY += move;
+  redrawGrass();
 }
 
 export function removeCarsOutsideScreen() {
@@ -259,6 +265,10 @@ export function removeCarsOutsideScreen() {
       state.cars.splice(i, 1);
     }
   }
+}
+
+export function redrawGrass() {
+  screen.style.backgroundPosition = `0px ${state.grassY}px`;
 }
 
 export function getRandomCarDirection() {
