@@ -10,7 +10,7 @@ export function createChicken(screen) {
   chickenElement.style.position = "absolute";
   chickenElement.style.width = ChickenWidth + "px";
   chickenElement.style.height = ChickenHeight + "px";
-  chickenElement.style.background = "yellow";
+  chickenElement.style.backgroundImage = `url("../crossRoad/pictures/chicken.png")`;
 
   screen.appendChild(chickenElement);
 }

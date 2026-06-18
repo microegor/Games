@@ -15,10 +15,13 @@ body {
 
 .screen {
   position: relative;
+  overflow: hidden;
+
+  background-image: url("../crossRoad/pictures/grass.png");
   width: 500px;
   height: 500px;
-  background-color: rgb(19 247 129);
-  overflow: hidden;
+  background-repeat: repeat;
+  background-position: 0px 0px;
 }
 
 .road {
@@ -42,8 +45,11 @@ body {
 
 .chicken {
   position: absolute;
-  background-color: yellow;
   z-index: 4;
+  /* background-size: 100% 100%; */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .line {
@@ -70,15 +76,8 @@ body {
   background-position: center;
   background-size: contain;
   position: absolute;
-  border: 1px solid black;
   border-radius: 10px;
   z-index: 2;
-}
-
-.chicken {
-  position: absolute;
-  background-color: yellow;
-  z-index: 5;
 }
 
 #game-over-screen {
