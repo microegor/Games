@@ -1,7 +1,9 @@
-const table = document.getElementById("table");
+import { getElementById } from "../core/utils.js";
+
+const table = getElementById("table");
 const jumper = document.createElement("div");
 
-window.score = 0
+let score = 0;
 let curTopPosition = 0;
 let isGameOver = false;
 let isStanding = false;
@@ -18,13 +20,13 @@ let prevTop = 0;
 
 const platformSpawnMin = 1000;
 const platformSpawnMax = 2800;
-let platforms = [];
+let platforms: HTMLElement[] = [];
 
-const killZone = document.getElementById("death")
+const killZone = getElementById("death")
 const height = table.offsetHeight - 5;
 killZone.style.top = height + "px";
 
-function newPlatform(x, y) {
+function newPlatform(x: string | number, y: string | number) {
     const platform = document.createElement("div");
     platform.classList.add("platform");
 
@@ -128,7 +130,7 @@ function jump() {
         curTopPosition = 0;
     }
 
-    Falling = false;
+    isFalling = false;
     jumper.style.top = curTopPosition + "px";
     isStanding = false;
     jumpBuffer = 0;
@@ -136,7 +138,7 @@ function jump() {
     prevBottom = jumper.offsetTop + jumper.offsetHeight;
 }
 
-function isColliding(jumper, platform) {
+function isColliding(jumper: HTMLDivElement, platform: HTMLElement) {
     const jLeft = jumper.offsetLeft;
     const jRight = jumper.offsetLeft + jumper.offsetWidth;
     const jBottom = jumper.offsetTop + jumper.offsetHeight;
@@ -178,7 +180,7 @@ function colisionCheck() {
             break;
         } else if (isColliding(jumper, killZone)) {
             window.location.href = "end.html";
-            localStorage.setItem("score", score);
+            localStorage.setItem("score", score.toString());
             window.location.href = "end.html";
         }
     }
@@ -230,10 +232,10 @@ setInterval(() => {
     const delta = currentTop - prevTop;
 
     if (delta > 0.5) {
-        Falling = true;
+        isFalling = true;
         jumper.style.backgroundImage = 'url("pictures/player_jump_down.png")';
     } else if (delta < -0.5) {
-        Falling = false;
+        isFalling = false;
         jumper.style.backgroundImage = 'url("pictures/player_jump_up.png")';
     }
 
@@ -246,7 +248,7 @@ setInterval(() => {
     }
     if (tick % 100 === 0) {
         score++;
-        document.getElementById("score").textContent = "Score: " + score;
+        getElementById("score").textContent = "Score: " + score;
     }
 
     colisionCheck();
