@@ -1,0 +1,62 @@
+html,
+body {
+    margin: 0;
+    height: 100%;
+    overflow: hidden;
+}
+
+.block {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+.block::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+
+    background: radial-gradient(circle at center, transparent 300px, rgba(0,0,0,0.4));
+    pointer-events: none;
+}
+
+.table {
+    height: 100%;
+    width: 500px;
+    position: relative;
+    background: linear-gradient(to bottom, #87CEEB 0%, #e0f7ff 100%);
+}
+
+.jumper {
+    position: absolute;
+    transition: top 0.5s ease;
+    z-index: 999;
+    background-position: center;
+    background-size: 200%;
+    
+    background-image: url("../pictures/player_jump_down.png");
+}
+
+.platform {
+    transition: top 0.5s ease;
+    position: absolute;
+    background-color: black;
+    width: 60px;
+    height: 10px;
+    
+    background-image: url("../pictures/platform.png");
+    background-size: 200px 100px;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.death{
+    position: absolute;
+    width: 100%;
+}
+
+.score{
+    font-size: 30;
+    z: 10000;
+}

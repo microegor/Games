@@ -1,0 +1,1 @@
+{"version":3,"file":"index.js","sourceRoot":"","sources":["../../src/bird/index.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,cAAc,EAAE,MAAM,kBAAkB,CAAC;AAElD,SAAS,IAAI;IACT,MAAM,CAAC,QAAQ,CAAC,IAAI,GAAG,WAAW,CAAC;AACvC,CAAC;AAED,cAAc,CAAC,MAAM,CAAC,CAAC,gBAAgB,CAAC,OAAO,EAAE,IAAI,CAAC,CAAA"}
