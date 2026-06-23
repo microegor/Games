@@ -1,21 +1,44 @@
+import { getElementById } from "../core/utils.js";
+
 //Bird stats
-const bird = {
+interface Bird {
+    top: number;
+    el: HTMLElement;
+}
+
+const bird: Bird = {
     top: 400,
-    el: document.getElementById("bird"),
+    el: getElementById("bird"),
 };
 
+if(!bird.el){
+    throw new Error("bird.el is null");
+}
 let score = 0;
-
 //Pipe stats
+
+interface Pipe {
+    left: number,
+    topHeight: number,
+    bottomHeight: number,
+    topEl: HTMLElement,
+    topCapEl: HTMLElement,
+    bottomEl: HTMLElement,
+    bottomCapEl: HTMLElement,
+    scoreT: HTMLElement,
+    scoreLeft: number,
+    flagS: boolean,
+};
+
 const pipeWidth = 60;
 const pipeGap = 170;
-const pipes = [];
+const pipes: Pipe[] = [];
 const pipeSpeed = 1;
 
 const pipeCapWidth = 90;
 const pipeCapHeight = 30;
 
-const table = document.getElementById("table");
+const table = getElementById("table");
 
 const maxTop = table.offsetHeight - bird.el.offsetHeight;
 let angle = 0;
@@ -29,7 +52,7 @@ const change = 0;
 
 let isGameOver = true;
 
-function isColliding(a, b) {
+function isColliding(a: HTMLElement, b: HTMLElement) {
     const rect1 = a.getBoundingClientRect();
     const rect2 = b.getBoundingClientRect();
 
@@ -41,7 +64,7 @@ function isColliding(a, b) {
     );
 }
 
-function jump(e) {
+function jump(e: { code: string; }) {
     if (isGameOver && e.code == "Space") {
         bird.top -= 200;
         bird.el.style.transform = `rotate(${angle}deg)`
@@ -144,7 +167,7 @@ function getDown() {
             if (isColliding(bird.el, pipes[i].scoreT) && pipes[i].flagS) {
                 pipes[i].flagS = false;
                 score++;
-                document.getElementById("score").textContent = "score: " + score;
+                getElementById("score").textContent = "score: " + score;
             }
             if (isColliding(bird.el, roof)) {
                 isGameOver = false;
@@ -169,7 +192,7 @@ function getDown() {
 
 
 function reload() {
-    document.getElementById("score").style.zIndex = 0;
+    getElementById("score").style.zIndex = "0";
 
     const block = document.createElement("div");
     block.classList.add("block");
@@ -180,16 +203,16 @@ function reload() {
     const endText = document.createElement("div");
     endText.classList.add("endText");
     endText.textContent = "Skil issue";
-    
+
     const endButton = document.createElement("div");
     endButton.classList.add("endButton");
     endButton.textContent = "Restart";
     endButton.addEventListener("click", restart);
-    
+
     const scoreEnd = document.createElement("div");
     scoreEnd.classList.add("scoreEnd");
     scoreEnd.textContent = "Score: " + score;
-    
+
     table.appendChild(block);
     block.appendChild(end);
     end.appendChild(endText);
