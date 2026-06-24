@@ -1,12 +1,28 @@
-.body{
+html,
+body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+}
+
+.body {
+    width: 100%;
+    height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-.screan{
+.screen {
+    overflow: hidden;
     position: absolute;
     width: 1200px;
-    width: 1000px;
+    height: 800px;
     background-color: aqua;
+}
+
+.mob {
+    background-color: black;
 }

@@ -1,4 +1,4 @@
-import { mobs } from "./objects.js";
+import { mobs, screen } from "./objects.js";
 import type { Mob } from "./objects.js";
 
 export function createMob(
@@ -12,7 +12,7 @@ export function createMob(
 ) {
     const nMob = document.createElement("div");
 
-    nMob.classList.add("car");
+    nMob.classList.add("mob");
 
     nMob.style.position = "absolute";
     nMob.style.width = width + "px";
@@ -32,7 +32,7 @@ export function createMob(
     };
 
     mobs.push(mob);
-    document.body.appendChild(nMob);
+    screen.appendChild(nMob);
 }
 
 let lastTime = 0;
