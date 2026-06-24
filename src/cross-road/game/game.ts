@@ -12,7 +12,6 @@ import {
   getRandomCarDirection,
   getRandomCarSpeed,
   getRandomCarDistance,
-  setCarSize,
   getRandomCarIndex,
 } from "./cars.js";
 

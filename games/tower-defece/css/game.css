@@ -1,0 +1,12 @@
+.body{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.screan{
+    position: absolute;
+    width: 1200px;
+    width: 1000px;
+    background-color: aqua;
+}
