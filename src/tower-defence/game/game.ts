@@ -1,5 +1,6 @@
 import { getElementById } from "../../core/utils.js";
 import { Mob } from "./mobs.js";
+import { Road } from "./road.js";
 
 export class Game {
     private screen: HTMLElement;
@@ -8,6 +9,16 @@ export class Game {
     private lastTime = 0;
     private animationId = 0;
     private isRunning = false;
+
+    private road = new Road(
+        [
+            { x: 0, y: 100 },
+            { x: 300, y: 100 },
+            { x: 300, y: 300 },
+            { x: 600, y: 300 },
+        ],
+        80
+    );
 
     constructor(screen: HTMLElement) {
         this.screen = screen;
@@ -40,49 +51,28 @@ export class Game {
     private createMobs() {
         this.addMob(
             new Mob({
-                width: 80,
+                width: 40,
                 height: 40,
-                speed: 50,
-                x: 0,
-                y: 100,
-                moveX: 0,
-                moveY: 1,
+                speed: 80,
+                path: this.road.points,
             })
         );
 
         this.addMob(
             new Mob({
-                width: 80,
-                height: 40,
-                speed: 150,
-                x: 500,
-                y: 200,
-                moveX: -1,
-                moveY: 0,
-            })
-        );
-
-        this.addMob(
-            new Mob({
-                width: 80,
-                height: 40,
-                speed: 70,
-                x: 300,
-                y: 0,
-                moveX: 0,
-                moveY: 1,
-            })
-        );
-
-        this.addMob(
-            new Mob({
-                width: 80,
-                height: 40,
+                width: 30,
+                height: 30,
                 speed: 120,
-                x: 300,
-                y: 400,
-                moveX: 0,
-                moveY: -1,
+                path: this.road.points,
+            })
+        );
+
+        this.addMob(
+            new Mob({
+                width: 50,
+                height: 50,
+                speed: 60,
+                path: this.road.points,
             })
         );
     }
@@ -92,6 +82,7 @@ export class Game {
             return;
         }
 
+        this.road.render(this.screen);
         this.createMobs();
 
         this.isRunning = true;

@@ -17,13 +17,20 @@ body {
 
 .screen {
     overflow: hidden;
-    position: absolute;
+    position: relative;
     width: 1200px;
     height: 800px;
     background-color: aqua;
 }
 
 .mob {
-    position: relative;
+    position: absolute;
     background-color: black;
+    z-index: 2;
+}
+
+.road {
+    position: absolute;
+    background-color: gray;
+    z-index: 1;
 }
