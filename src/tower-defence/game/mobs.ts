@@ -1,53 +1,55 @@
-import { mobs, screen } from "./objects.js";
-import type { Mob } from "./objects.js";
-
-export function createMob(
-    width: number,
-    height: number,
-    speed: number,
-    x: number,
-    y: number,
-    moveX: number,
-    moveY: number
-) {
-    const nMob = document.createElement("div");
-
-    nMob.classList.add("mob");
-
-    nMob.style.position = "absolute";
-    nMob.style.width = width + "px";
-    nMob.style.height = height + "px";
-    nMob.style.left = x + "px";
-    nMob.style.top = y + "px";
-
-    const mob: Mob = {
-        element: nMob,
-        speed,
-        width,
-        height,
-        left: x,
-        top: y,
-        moveX,
-        moveY,
-    };
-
-    mobs.push(mob);
-    screen.appendChild(nMob);
+interface MobConstructorParams {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+    speed: number;
+    moveX: number;
+    moveY: number;
 }
 
-let lastTime = 0;
+export class Mob {
+    public element: HTMLElement;
 
-export function moveMobs(time: number = 0) {
-    const deltaTime = (time - lastTime) / 1000;
-    lastTime = time;
+    private x: number;
+    private y: number;
 
-    for (const mob of mobs) {
-        mob.left += mob.moveX * mob.speed * deltaTime;
-        mob.top += mob.moveY * mob.speed * deltaTime;
+    private width: number;
+    private height: number;
 
-        mob.element.style.left = mob.left + "px";
-        mob.element.style.top = mob.top + "px";
+    private speed: number;
+    private moveX: number;
+    private moveY: number;
+
+    constructor(params: MobConstructorParams) {
+        const element = document.createElement("div");
+
+        element.classList.add("mob");
+
+        element.style.position = "absolute";
+        element.style.width = params.width + "px";
+        element.style.height = params.height + "px";
+        element.style.left = params.x + "px";
+        element.style.top = params.y + "px";
+
+        this.element = element;
+
+        this.x = params.x;
+        this.y = params.y;
+
+        this.width = params.width;
+        this.height = params.height;
+
+        this.speed = params.speed;
+        this.moveX = params.moveX;
+        this.moveY = params.moveY;
     }
 
-    requestAnimationFrame(moveMobs);
+    public update(deltaTime: number) {
+        this.x += this.moveX * this.speed * deltaTime;
+        this.y += this.moveY * this.speed * deltaTime;
+
+        this.element.style.left = this.x + "px";
+        this.element.style.top = this.y + "px";
+    }
 }

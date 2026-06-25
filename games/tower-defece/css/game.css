@@ -24,5 +24,6 @@ body {
 }
 
 .mob {
+    position: relative;
     background-color: black;
 }
