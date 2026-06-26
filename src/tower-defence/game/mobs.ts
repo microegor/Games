@@ -5,6 +5,7 @@ interface MobConstructorParams {
     height: number;
     speed: number;
     path: Point[];
+    laneOffset?: number;
 }
 
 export class Mob {
@@ -34,10 +35,13 @@ export class Mob {
         this.width = params.width;
         this.height = params.height;
         this.speed = params.speed;
-        this.path = params.path;
 
-        this.x = params.path[0].x;
-        this.y = params.path[0].y;
+        const laneOffset = params.laneOffset ?? 0;
+
+        this.path = this.createLanePath(params.path, laneOffset);
+
+        this.x = this.path[0].x;
+        this.y = this.path[0].y;
 
         this.render();
     }
@@ -71,6 +75,89 @@ export class Mob {
         }
 
         this.render();
+    }
+
+    private createLanePath(path: Point[], laneOffset: number): Point[] {
+        if (path.length < 2 || laneOffset === 0) {
+            return path.map((point) => ({ ...point }));
+        }
+
+        const offsetSegments = [];
+
+        for (let i = 0; i < path.length - 1; i++) {
+            const start = path[i];
+            const end = path[i + 1];
+
+            const dx = end.x - start.x;
+            const dy = end.y - start.y;
+
+            const length = Math.sqrt(dx * dx + dy * dy);
+
+            const normalX = -dy / length;
+            const normalY = dx / length;
+
+            offsetSegments.push({
+                start: {
+                    x: start.x + normalX * laneOffset,
+                    y: start.y + normalY * laneOffset,
+                },
+                end: {
+                    x: end.x + normalX * laneOffset,
+                    y: end.y + normalY * laneOffset,
+                },
+            });
+        }
+
+        const result: Point[] = [];
+
+        result.push(offsetSegments[0].start);
+
+        for (let i = 1; i < path.length - 1; i++) {
+            const previous = offsetSegments[i - 1];
+            const next = offsetSegments[i];
+
+            result.push(this.getLinesIntersection(
+                previous.start,
+                previous.end,
+                next.start,
+                next.end
+            ));
+        }
+
+        result.push(offsetSegments[offsetSegments.length - 1].end);
+
+        return result;
+    }
+
+    private getLinesIntersection(
+        a1: Point,
+        a2: Point,
+        b1: Point,
+        b2: Point
+    ): Point {
+        const aDx = a2.x - a1.x;
+        const aDy = a2.y - a1.y;
+
+        const bDx = b2.x - b1.x;
+        const bDy = b2.y - b1.y;
+
+        const denominator = aDx * bDy - aDy * bDx;
+
+        if (denominator === 0) {
+            return {
+                x: a2.x,
+                y: a2.y,
+            };
+        }
+
+        const t =
+            ((b1.x - a1.x) * bDy - (b1.y - a1.y) * bDx) /
+            denominator;
+
+        return {
+            x: a1.x + t * aDx,
+            y: a1.y + t * aDy,
+        };
     }
 
     private render() {

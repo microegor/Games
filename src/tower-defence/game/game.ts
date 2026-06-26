@@ -6,6 +6,16 @@ export class Game {
     private screen: HTMLElement;
     private mobs: Mob[] = [];
 
+    private waveIndex = 0;
+    private mobsInWave = 0;
+    private spawnedInWave = 0;
+
+    private spawnTimer = 0;
+    private timeBetweenMobs = 1;
+    private timeBetweenWaves = 12;
+
+    private isWaitingNextWave = false;
+
     private lastTime = 0;
     private animationId = 0;
     private isRunning = false;
@@ -13,9 +23,21 @@ export class Game {
     private road = new Road(
         [
             { x: 0, y: 100 },
-            { x: 300, y: 100 },
-            { x: 300, y: 300 },
-            { x: 600, y: 300 },
+            { x: 250, y: 100 },
+            { x: 250, y: 250 },
+            { x: 500, y: 250 },
+            { x: 500, y: 120 },
+            { x: 750, y: 120 },
+            { x: 750, y: 350 },
+            { x: 1000, y: 350 },
+            { x: 1000, y: 200 },
+            { x: 1150, y: 200 },
+            { x: 1150, y: 500 },
+            { x: 1000, y: 500 },
+            { x: 1000, y: 700 },
+            { x: 800, y: 700 },
+            { x: 800, y: 500 },
+            { x: 0, y: 500 },
         ],
         80
     );
@@ -38,6 +60,8 @@ export class Game {
     };
 
     private update(deltaTime: number) {
+        this.updateSpawner(deltaTime);
+
         for (const mob of this.mobs) {
             mob.update(deltaTime);
         }
@@ -48,33 +72,76 @@ export class Game {
         this.screen.appendChild(mob.element);
     }
 
-    private createMobs() {
-        this.addMob(
-            new Mob({
+    private createMob() {
+        const mobTypes = [
+            {
                 width: 40,
                 height: 40,
-                speed: 80,
-                path: this.road.points,
-            })
-        );
-
-        this.addMob(
-            new Mob({
+                speed: 70,
+            },
+            {
                 width: 30,
                 height: 30,
-                speed: 120,
-                path: this.road.points,
-            })
-        );
+                speed: 90,
+            },
+            {
+                width: 50,
+                height: 50,
+                speed: 50,
+            },
+        ];
+
+        const randomType =
+            mobTypes[Math.floor(Math.random() * mobTypes.length)];
+
+        const lanes = [-18, -9, 0, 9, 18];
+        const randomLane = lanes[Math.floor(Math.random() * lanes.length)];
 
         this.addMob(
             new Mob({
-                width: 50,
-                height: 50,
-                speed: 60,
+                width: randomType.width,
+                height: randomType.height,
+                speed: randomType.speed,
                 path: this.road.points,
+                laneOffset: randomLane,
             })
         );
+    }
+
+    private startNextWave() {
+        this.waveIndex++;
+
+        this.mobsInWave = 1 + this.waveIndex * 2;
+        this.spawnedInWave = 0;
+
+        this.spawnTimer = 0;
+        this.isWaitingNextWave = false;
+
+        console.log("Wave:", this.waveIndex);
+    }
+
+    private updateSpawner(deltaTime: number) {
+        this.spawnTimer += deltaTime;
+
+        if (this.isWaitingNextWave) {
+            if (this.spawnTimer >= this.timeBetweenWaves) {
+                this.startNextWave();
+            }
+
+            return;
+        }
+
+        if (this.spawnedInWave >= this.mobsInWave) {
+            this.isWaitingNextWave = true;
+            this.spawnTimer = 0;
+            return;
+        }
+
+        if (this.spawnTimer >= this.timeBetweenMobs) {
+            this.createMob();
+            this.spawnedInWave++;
+            this.spawnTimer = 0;
+        }
     }
 
     public start() {
@@ -83,7 +150,8 @@ export class Game {
         }
 
         this.road.render(this.screen);
-        this.createMobs();
+
+        this.startNextWave();
 
         this.isRunning = true;
         this.lastTime = performance.now();
