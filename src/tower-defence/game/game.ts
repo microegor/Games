@@ -9,6 +9,10 @@ export class Game {
     private isPlacingTower = false;
     private towers: HTMLElement[] = [];
 
+    private mouseX = 0;
+    private mouseY = 0;
+    private towerPreview: HTMLElement | null = null;
+
     private towerSize = 50;
     private minDistanceBetweenTowers = 60;
 
@@ -80,29 +84,66 @@ export class Game {
             this.isPlacingTower = true;
             buildButton.classList.add("active");
 
+            this.createTowerPreview();
+
             console.log("Выбери место для башни");
         });
 
-        this.screen.addEventListener("click", (event) => {
-            if (!this.isPlacingTower) {
+        this.screen.addEventListener("mousemove", (event) => {
+            if (!this.isPlacingTower || !this.towerPreview) {
                 return;
             }
 
             const rect = this.screen.getBoundingClientRect();
 
-            const x = event.clientX - rect.left;
-            const y = event.clientY - rect.top;
+            this.mouseX = event.clientX - rect.left;
+            this.mouseY = event.clientY - rect.top;
 
-            if (!this.canPlaceTower(x, y)) {
+            this.towerPreview.style.left = `${this.mouseX}px`;
+            this.towerPreview.style.top = `${this.mouseY}px`;
+
+            if (this.canPlaceTower(this.mouseX, this.mouseY)) {
+                this.towerPreview.classList.remove("blocked");
+            } else {
+                this.towerPreview.classList.add("blocked");
+            }
+        });
+
+        this.screen.addEventListener("click", () => {
+            if (!this.isPlacingTower) {
+                return;
+            }
+
+            if (!this.canPlaceTower(this.mouseX, this.mouseY)) {
                 console.log("Сюда нельзя поставить башню");
                 return;
             }
 
-            this.placeTower(x, y);
+            this.placeTower(this.mouseX, this.mouseY);
+
+            this.removeTowerPreview();
 
             this.isPlacingTower = false;
             buildButton.classList.remove("active");
         });
+    }
+
+    private createTowerPreview() {
+        this.removeTowerPreview();
+
+        this.towerPreview = document.createElement("div");
+        this.towerPreview.className = "tower tower-preview";
+
+        this.screen.appendChild(this.towerPreview);
+    }
+
+    private removeTowerPreview() {
+        if (!this.towerPreview) {
+            return;
+        }
+
+        this.towerPreview.remove();
+        this.towerPreview = null;
     }
 
     private placeTower(x: number, y: number) {

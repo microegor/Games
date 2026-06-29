@@ -69,3 +69,12 @@ body {
 .tower-card.active {
     background: #2f6fed;
 }
+
+.tower-preview {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.tower-preview.blocked {
+    background: red;
+}
