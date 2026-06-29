@@ -79,6 +79,8 @@ export class Game {
         buildButton.addEventListener("click", () => {
             this.isPlacingTower = true;
             buildButton.classList.add("active");
+
+            console.log("Выбери место для башни");
         });
 
         this.screen.addEventListener("click", (event) => {
@@ -115,17 +117,33 @@ export class Game {
     }
 
     private canPlaceTower(x: number, y: number) {
+        if (this.isOutsideScreen(x, y)) {
+            return false;
+        }
+
+        if (this.isPointOnRoad(x, y)) {
+            return false;
+        }
+
+        if (this.isPointOnTower(x, y)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    private isOutsideScreen(x: number, y: number) {
         const towerRadius = this.towerSize / 2;
 
-        if (
+        return (
             x - towerRadius < 0 ||
             y - towerRadius < 0 ||
             x + towerRadius > this.screen.clientWidth ||
             y + towerRadius > this.screen.clientHeight
-        ) {
-            return false;
-        }
+        );
+    }
 
+    private isPointOnTower(x: number, y: number) {
         for (const tower of this.towers) {
             const towerX = Number.parseFloat(tower.style.left);
             const towerY = Number.parseFloat(tower.style.top);
@@ -135,11 +153,69 @@ export class Game {
             const distance = Math.sqrt(dx * dx + dy * dy);
 
             if (distance < this.minDistanceBetweenTowers) {
-                return false;
+                return true;
             }
         }
 
-        return true;
+        return false;
+    }
+
+    private isPointOnRoad(x: number, y: number) {
+        const roadRadius = this.road.width / 2;
+        const towerRadius = this.towerSize / 2;
+
+        const minDistanceToRoad = roadRadius + towerRadius;
+
+        const points = this.road.points;
+
+        for (let i = 0; i < points.length - 1; i++) {
+            const start = points[i];
+            const end = points[i + 1];
+
+            const distance = this.distanceToSegment(
+                x,
+                y,
+                start.x,
+                start.y,
+                end.x,
+                end.y
+            );
+
+            if (distance < minDistanceToRoad) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private distanceToSegment(
+        px: number,
+        py: number,
+        x1: number,
+        y1: number,
+        x2: number,
+        y2: number
+    ) {
+        const dx = x2 - x1;
+        const dy = y2 - y1;
+
+        if (dx === 0 && dy === 0) {
+            return Math.sqrt((px - x1) ** 2 + (py - y1) ** 2);
+        }
+
+        const t = Math.max(
+            0,
+            Math.min(
+                1,
+                ((px - x1) * dx + (py - y1) * dy) / (dx * dx + dy * dy)
+            )
+        );
+
+        const closestX = x1 + t * dx;
+        const closestY = y1 + t * dy;
+
+        return Math.sqrt((px - closestX) ** 2 + (py - closestY) ** 2);
     }
 
     private addMob(mob: Mob) {
