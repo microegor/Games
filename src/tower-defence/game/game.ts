@@ -6,6 +6,12 @@ export class Game {
     private screen: HTMLElement;
     private mobs: Mob[] = [];
 
+    private isPlacingTower = false;
+    private towers: HTMLElement[] = [];
+
+    private towerSize = 50;
+    private minDistanceBetweenTowers = 60;
+
     private waveIndex = 0;
     private mobsInWave = 0;
     private spawnedInWave = 0;
@@ -65,6 +71,75 @@ export class Game {
         for (const mob of this.mobs) {
             mob.update(deltaTime);
         }
+    }
+
+    private enableTowerPlacement() {
+        const buildButton = getElementById("build-tower");
+
+        buildButton.addEventListener("click", () => {
+            this.isPlacingTower = true;
+            buildButton.classList.add("active");
+        });
+
+        this.screen.addEventListener("click", (event) => {
+            if (!this.isPlacingTower) {
+                return;
+            }
+
+            const rect = this.screen.getBoundingClientRect();
+
+            const x = event.clientX - rect.left;
+            const y = event.clientY - rect.top;
+
+            if (!this.canPlaceTower(x, y)) {
+                console.log("Сюда нельзя поставить башню");
+                return;
+            }
+
+            this.placeTower(x, y);
+
+            this.isPlacingTower = false;
+            buildButton.classList.remove("active");
+        });
+    }
+
+    private placeTower(x: number, y: number) {
+        const tower = document.createElement("div");
+
+        tower.className = "tower";
+        tower.style.left = `${x}px`;
+        tower.style.top = `${y}px`;
+
+        this.towers.push(tower);
+        this.screen.appendChild(tower);
+    }
+
+    private canPlaceTower(x: number, y: number) {
+        const towerRadius = this.towerSize / 2;
+
+        if (
+            x - towerRadius < 0 ||
+            y - towerRadius < 0 ||
+            x + towerRadius > this.screen.clientWidth ||
+            y + towerRadius > this.screen.clientHeight
+        ) {
+            return false;
+        }
+
+        for (const tower of this.towers) {
+            const towerX = Number.parseFloat(tower.style.left);
+            const towerY = Number.parseFloat(tower.style.top);
+
+            const dx = towerX - x;
+            const dy = towerY - y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+
+            if (distance < this.minDistanceBetweenTowers) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private addMob(mob: Mob) {
@@ -150,6 +225,8 @@ export class Game {
         }
 
         this.road.render(this.screen);
+
+        this.enableTowerPlacement();
 
         this.startNextWave();
 
