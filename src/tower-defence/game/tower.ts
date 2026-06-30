@@ -1,3 +1,5 @@
+import { Mob } from "./mobs.js";
+
 export interface TowerOptions {
     x: number;
     y: number;
@@ -19,6 +21,7 @@ export class Tower {
     public fireRate: number;
 
     private attackTimer = 0;
+    private rangeElement: HTMLElement;
 
     constructor(options: TowerOptions) {
         this.x = options.x;
@@ -36,25 +39,54 @@ export class Tower {
         this.element.style.top = `${this.y}px`;
         this.element.style.width = `${this.size}px`;
         this.element.style.height = `${this.size}px`;
+
+        this.rangeElement = document.createElement("div");
+        this.rangeElement.className = "tower-range";
+
+        this.rangeElement.style.width = `${this.range * 2}px`;
+        this.rangeElement.style.height = `${this.range * 2}px`;
+
+        this.element.appendChild(this.rangeElement);
     }
 
-    public update(deltaTime: number) {
+    public update(deltaTime: number, mobs: Mob[]) {
         this.attackTimer += deltaTime;
+
+        const target = this.findTarget(mobs);
+
+        if (!target) {
+            return;
+        }
 
         if (this.attackTimer >= this.fireRate) {
             this.attackTimer = 0;
-
-            // Здесь позже можно будет добавить атаку по мобам
-            console.log("Tower attacks");
+            this.attack(target);
         }
     }
 
-    public isPointInside(x: number, y: number) {
-        const dx = this.x - x;
-        const dy = this.y - y;
-        const distance = Math.sqrt(dx * dx + dy * dy);
+    private findTarget(mobs: Mob[]) {
+        for (const mob of mobs) {
+            const distance = this.getDistanceToMob(mob);
 
-        return distance < this.size / 2;
+            if (distance <= this.range) {
+                return mob;
+            }
+        }
+
+        return null;
+    }
+
+    private getDistanceToMob(mob: Mob) {
+        const dx = this.x - mob.x;
+        const dy = this.y - mob.y;
+
+        return Math.sqrt(dx * dx + dy * dy);
+    }
+
+    private attack(mob: Mob) {
+        mob.takeDamage(this.damage);
+
+        console.log("Tower attacks mob. Mob HP:", mob.hp);
     }
 
     public getDistanceTo(x: number, y: number) {

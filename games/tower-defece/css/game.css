@@ -78,3 +78,18 @@ body {
 .tower-preview.blocked {
     background: red;
 }
+
+.tower-range {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+
+    border: 1px solid rgba(74, 144, 226, 0.4);
+    background: rgba(74, 144, 226, 0.1);
+
+    pointer-events: none;
+    z-index: -1;
+}

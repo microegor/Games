@@ -4,6 +4,7 @@ interface MobConstructorParams {
     width: number;
     height: number;
     speed: number;
+    hp: number;
     path: Point[];
     laneOffset?: number;
 }
@@ -11,8 +12,12 @@ interface MobConstructorParams {
 export class Mob {
     public element: HTMLElement;
 
-    private x: number;
-    private y: number;
+    public x = 0;
+    public y = 0;
+
+    public hp: number;
+    public maxHp: number;
+    public isDead = false;
 
     private width: number;
     private height: number;
@@ -22,9 +27,11 @@ export class Mob {
 
     private targetIndex = 1;
 
+    private hpBar: HTMLElement;
+    private hpFill: HTMLElement;
+
     constructor(params: MobConstructorParams) {
         const element = document.createElement("div");
-
         element.classList.add("mob");
 
         element.style.width = params.width + "px";
@@ -35,6 +42,18 @@ export class Mob {
         this.width = params.width;
         this.height = params.height;
         this.speed = params.speed;
+
+        this.hp = params.hp;
+        this.maxHp = params.hp;
+
+        this.hpBar = document.createElement("div");
+        this.hpBar.className = "mob-hp-bar";
+
+        this.hpFill = document.createElement("div");
+        this.hpFill.className = "mob-hp-fill";
+
+        this.hpBar.appendChild(this.hpFill);
+        this.element.appendChild(this.hpBar);
 
         const laneOffset = params.laneOffset ?? 0;
 
@@ -47,6 +66,10 @@ export class Mob {
     }
 
     public update(deltaTime: number) {
+        if (this.isDead) {
+            return;
+        }
+
         if (this.targetIndex >= this.path.length) {
             return;
         }
@@ -75,6 +98,27 @@ export class Mob {
         }
 
         this.render();
+    }
+
+    public takeDamage(damage: number) {
+        this.hp -= damage;
+
+        if (this.hp <= 0) {
+            this.hp = 0;
+            this.die();
+        }
+
+        this.updateHpBar();
+    }
+
+    private updateHpBar() {
+        const percent = this.hp / this.maxHp;
+        this.hpFill.style.width = `${percent * 100}%`;
+    }
+
+    private die() {
+        this.isDead = true;
+        this.element.remove();
     }
 
     private createLanePath(path: Point[], laneOffset: number): Point[] {
@@ -116,12 +160,14 @@ export class Mob {
             const previous = offsetSegments[i - 1];
             const next = offsetSegments[i];
 
-            result.push(this.getLinesIntersection(
-                previous.start,
-                previous.end,
-                next.start,
-                next.end
-            ));
+            result.push(
+                this.getLinesIntersection(
+                    previous.start,
+                    previous.end,
+                    next.start,
+                    next.end
+                )
+            );
         }
 
         result.push(offsetSegments[offsetSegments.length - 1].end);

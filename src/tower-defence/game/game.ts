@@ -78,10 +78,12 @@ export class Game {
         }
 
         for (const tower of this.towers) {
-            tower.update(deltaTime);
+            tower.update(deltaTime, this.mobs);
         }
-    }
 
+        this.mobs = this.mobs.filter((mob) => !mob.isDead);
+    }
+    
     private enableTowerPlacement() {
         const buildButton = getElementById("build-tower");
 
@@ -273,16 +275,19 @@ export class Game {
                 width: 40,
                 height: 40,
                 speed: 70,
+                hp: 50,
             },
             {
                 width: 30,
                 height: 30,
                 speed: 90,
+                hp: 30,
             },
             {
                 width: 50,
                 height: 50,
                 speed: 50,
+                hp: 100,
             },
         ];
 
@@ -297,6 +302,7 @@ export class Game {
                 width: randomType.width,
                 height: randomType.height,
                 speed: randomType.speed,
+                hp: randomType.hp,
                 path: this.road.points,
                 laneOffset: randomLane,
             })
