@@ -1,13 +1,14 @@
 import { getElementById } from "../../core/utils.js";
 import { Mob } from "./mobs.js";
 import { Road } from "./road.js";
+import { Tower } from "./tower.js";
 
 export class Game {
     private screen: HTMLElement;
     private mobs: Mob[] = [];
 
     private isPlacingTower = false;
-    private towers: HTMLElement[] = [];
+    private towers: Tower[] = [];
 
     private mouseX = 0;
     private mouseY = 0;
@@ -74,6 +75,10 @@ export class Game {
 
         for (const mob of this.mobs) {
             mob.update(deltaTime);
+        }
+
+        for (const tower of this.towers) {
+            tower.update(deltaTime);
         }
     }
 
@@ -147,14 +152,17 @@ export class Game {
     }
 
     private placeTower(x: number, y: number) {
-        const tower = document.createElement("div");
-
-        tower.className = "tower";
-        tower.style.left = `${x}px`;
-        tower.style.top = `${y}px`;
+        const tower = new Tower({
+            x,
+            y,
+            size: this.towerSize,
+            range: 150,
+            damage: 10,
+            fireRate: 1,
+        });
 
         this.towers.push(tower);
-        this.screen.appendChild(tower);
+        this.screen.appendChild(tower.element);
     }
 
     private canPlaceTower(x: number, y: number) {
@@ -186,12 +194,7 @@ export class Game {
 
     private isPointOnTower(x: number, y: number) {
         for (const tower of this.towers) {
-            const towerX = Number.parseFloat(tower.style.left);
-            const towerY = Number.parseFloat(tower.style.top);
-
-            const dx = towerX - x;
-            const dy = towerY - y;
-            const distance = Math.sqrt(dx * dx + dy * dy);
+            const distance = tower.getDistanceTo(x, y);
 
             if (distance < this.minDistanceBetweenTowers) {
                 return true;
