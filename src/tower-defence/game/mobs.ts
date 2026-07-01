@@ -18,6 +18,7 @@ export class Mob {
     public hp: number;
     public maxHp: number;
     public isDead = false;
+    public hasReachedEnd = false;
 
     private width: number;
     private height: number;
@@ -66,11 +67,12 @@ export class Mob {
     }
 
     public update(deltaTime: number) {
-        if (this.isDead) {
+        if (this.isDead || this.hasReachedEnd) {
             return;
         }
 
         if (this.targetIndex >= this.path.length) {
+            this.hasReachedEnd = true;
             return;
         }
 

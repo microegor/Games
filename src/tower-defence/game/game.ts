@@ -10,6 +10,9 @@ export class Game {
     private isPlacingTower = false;
     private towers: Tower[] = [];
 
+    private playerHp = 20;
+    private hpElement: HTMLElement;
+
     private mouseX = 0;
     private mouseY = 0;
     private towerPreview: HTMLElement | null = null;
@@ -48,13 +51,34 @@ export class Game {
             { x: 1000, y: 700 },
             { x: 800, y: 700 },
             { x: 800, y: 500 },
-            { x: 0, y: 500 },
+            { x: -20, y: 500 },
         ],
         80
     );
 
     constructor(screen: HTMLElement) {
         this.screen = screen;
+
+        this.hpElement = document.createElement("div");
+        this.hpElement.className = "player-hp";
+        this.hpElement.textContent = `HP: ${this.playerHp}`;
+
+        this.screen.appendChild(this.hpElement);
+    }
+
+    private takeDamage(damage: number) {
+        this.playerHp -= damage;
+
+        if (this.playerHp < 0) {
+            this.playerHp = 0;
+        }
+
+        this.hpElement.textContent = `HP: ${this.playerHp}`;
+
+        if (this.playerHp <= 0) {
+            console.log("Game over");
+            this.stop();
+        }
     }
 
     private tick = (time: number) => {
@@ -81,9 +105,22 @@ export class Game {
             tower.update(deltaTime, this.mobs);
         }
 
-        this.mobs = this.mobs.filter((mob) => !mob.isDead);
+        this.mobs = this.mobs.filter((mob) => {
+            if (mob.isDead) {
+                mob.element.remove();
+                return false;
+            }
+
+            if (mob.hasReachedEnd) {
+                this.takeDamage(1);
+                mob.element.remove();
+                return false;
+            }
+
+            return true;
+        });
     }
-    
+
     private enableTowerPlacement() {
         const buildButton = getElementById("build-tower");
 
