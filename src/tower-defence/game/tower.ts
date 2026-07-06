@@ -76,22 +76,68 @@ export class Tower {
         return null;
     }
 
-    private getDistanceToMob(mob: Mob) {
-        const dx = this.x - mob.x;
-        const dy = this.y - mob.y;
+    private shootProjectile(mob: Mob) {
+        const projectile = document.createElement("div");
+        projectile.className = "projectile";
 
-        return Math.sqrt(dx * dx + dy * dy);
+        const startX = this.x;
+        const startY = this.y ;
+
+        const endX = mob.x;
+        const endY = mob.y;
+
+        projectile.style.left = `${startX}px`;
+        projectile.style.top = `${startY}px`;
+
+        const game = this.element.parentElement;
+
+        if (!game) {
+            return;
+        }
+
+        game.appendChild(projectile);
+
+        const dx = endX - startX;
+        const dy = endY - startY;
+
+        projectile.animate(
+            [
+                {
+                    transform: "translate(-50%, -50%) translate(0px, 0px)",
+                    opacity: 1,
+                },
+                {
+                    transform: `translate(-50%, -50%) translate(${dx}px, ${dy}px)`,
+                    opacity: 0.2,
+                },
+            ],
+            {
+                duration: 200,
+                easing: "linear",
+            }
+        ).onfinish = () => {
+            projectile.remove();
+        };
     }
 
     private attack(mob: Mob) {
+        this.shootProjectile(mob);
+
         mob.takeDamage(this.damage);
 
         console.log("Tower attacks mob. Mob HP:", mob.hp);
     }
 
+    private getDistanceToMob(mob: Mob) {
+        return this.getDistanceTo(mob.x, mob.y);
+    }
+
     public getDistanceTo(x: number, y: number) {
-        const dx = this.x - x;
-        const dy = this.y - y;
+        const towerCenterX = this.x + this.size / 2;
+        const towerCenterY = this.y + this.size / 2;
+
+        const dx = towerCenterX - x;
+        const dy = towerCenterY - y;
 
         return Math.sqrt(dx * dx + dy * dy);
     }
