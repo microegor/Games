@@ -4,6 +4,12 @@ body {
   padding: 0;
 }
 
+.logo-title {
+  font-size: 60px;
+  background: none;
+  border: none;
+}
+
 .intr {
   display: flex;
   align-items: center;
@@ -20,20 +26,48 @@ body {
 .context-menu {
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 10px;
 }
 
 .game {
   font-family: Arial, sans-serif;
-  font-size: 30px;
+  font-size: 20px;
   font-weight: 600;
   color: white;
   text-decoration: none;
 }
 
+.context-menu>.game,
+.game-button>.game {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 12px 18px;
+
+  font-size: 20px;
+  color: white;
+
+  background-color: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 6px;
+
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.context-menu>.game:hover,
+.game-button:hover>.game {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.6);
+  transform: translateY(-2px);
+}
+
 .game-button {
   position: relative;
-  padding: 15px 20px;
+  padding: 0;
   cursor: pointer;
 }
 
@@ -74,7 +108,6 @@ body {
   background-color: #eee;
 }
 
-/* Показываем меню при наведении на game-button */
 .game-button:hover .pop-menu {
   visibility: visible;
   opacity: 1;
